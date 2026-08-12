@@ -691,6 +691,111 @@ function applyProperties(renderAfter = true) {
     }
 }
 
+// ============================================================
+// LIVE OBJECT SIZE UPDATE
+// ============================================================
+
+$("w").addEventListener(
+    "input",
+    () => {
+
+        const obj = getSelectedObject();
+
+        if (!obj) {
+            return;
+        }
+
+        obj.w = Number($("w").value);
+
+        const element =
+            document.querySelector(
+                `[data-id="${obj.id}"]`
+            );
+
+        if (element) {
+            element.style.width =
+                obj.w + "px";
+        }
+    }
+);
+
+
+$("h").addEventListener(
+    "input",
+    () => {
+
+        const obj = getSelectedObject();
+
+        if (!obj) {
+            return;
+        }
+
+        obj.h = Number($("h").value);
+
+        const element =
+            document.querySelector(
+                `[data-id="${obj.id}"]`
+            );
+
+        if (element) {
+            element.style.height =
+                obj.h + "px";
+        }
+    }
+);
+
+// ============================================================
+// LIVE OBJECT POSITION UPDATE
+// ============================================================
+
+$("x").addEventListener(
+    "input",
+    () => {
+
+        const obj = getSelectedObject();
+
+        if (!obj) {
+            return;
+        }
+
+        obj.x = Number($("x").value);
+
+        const element =
+            document.querySelector(
+                `[data-id="${obj.id}"]`
+            );
+
+        if (element) {
+            element.style.left =
+                obj.x + "px";
+        }
+    }
+);
+
+
+$("y").addEventListener(
+    "input",
+    () => {
+
+        const obj = getSelectedObject();
+
+        if (!obj) {
+            return;
+        }
+
+        obj.y = Number($("y").value);
+
+        const element =
+            document.querySelector(
+                `[data-id="${obj.id}"]`
+            );
+
+        if (element) {
+            element.style.top =
+                obj.y + "px";
+        }
+    }
+);
 
 // ============================================================
 // DRAG
@@ -1518,6 +1623,14 @@ function updateProjectSettings() {
         );
 
 
+    // Update the visual HMI canvas size
+    canvas.style.width =
+        project.canvas.width + "px";
+
+    canvas.style.height =
+        project.canvas.height + "px";
+
+
     project.opc.endpoint =
         $("endpoint").value;
 
@@ -1533,6 +1646,32 @@ function updateProjectSettings() {
     project.opc.username =
         $("user").value;
 }
+
+
+// ============================================================
+// LIVE CANVAS SIZE UPDATE
+// ============================================================
+
+$("cw").addEventListener(
+    "input",
+    () => {
+
+        updateProjectSettings();
+
+        render();
+    }
+);
+
+
+$("ch").addEventListener(
+    "input",
+    () => {
+
+        updateProjectSettings();
+
+        render();
+    }
+);
 
 
 // ============================================================

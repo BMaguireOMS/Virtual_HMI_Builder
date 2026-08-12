@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Virtual HMI Builder</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="app">
+
+  <header>
+    <strong>Virtual HMI Builder</strong>
+
+    <div class="actions">
+
+      <button id="newBtn">
+        New
+      </button>
+
+      <button id="saveBtn">
+        Save Project
+      </button>
+
+      <label class="file-button">
+        Open Project
+
+        <input
+          id="openFile"
+          type="file"
+          accept=".json"
+          hidden
+        >
+      </label>
+
+      <button id="previewBtn">
+        Preview
+      </button>
+
+      <button id="exportBtn">
+        Export Runtime
+      </button>
+
+    </div>
+  </header>
+
+
+  <aside class="tools">
+
+    <h3>Toolbox</h3>
+
+
+    <div class="group">
+
+      <div class="group-title">
+        Basic
+      </div>
+
+      <button
+        class="tool"
+        data-t="label">
+        Label
+      </button>
+
+      <button
+        class="tool"
+        data-t="button">
+        Push Button
+      </button>
+
+      <button
+        class="tool"
+        data-t="num">
+        Numeric Display
+      </button>
+
+      <button
+        class="tool"
+        data-t="input">
+        Numeric Input
+      </button>
+
+      <button
+        class="tool"
+        data-t="lamp">
+        Indicator Lamp
+      </button>
+
+      <button
+        class="tool"
+        data-t="toggle">
+        Toggle
+      </button>
+
+    </div>
+
+
+    <div class="group">
+
+      <div class="group-title">
+        Industrial
+      </div>
+
+      <button
+        class="tool"
+        data-t="gauge">
+        Gauge
+      </button>
+
+      <button
+        class="tool"
+        data-t="bar">
+        Bar Graph
+      </button>
+
+      <button
+        class="tool"
+        data-t="alarm">
+        Alarm Banner
+      </button>
+
+      <button
+        class="tool"
+        data-t="trend">
+        Trend
+      </button>
+
+      <button
+        class="tool"
+        data-t="image">
+        Image Placeholder
+      </button>
+
+      <button
+        class="tool"
+        data-t="nav">
+        Navigation Button
+      </button>
+
+    </div>
+
+
+    <div class="group">
+
+      <div class="group-title">
+        Edit
+      </div>
+
+      <button id="dupBtn">
+        Duplicate
+      </button>
+
+      <button id="delBtn">
+        Delete
+      </button>
+
+      <button id="frontBtn">
+        Bring Front
+      </button>
+
+      <button id="backBtn">
+        Send Back
+      </button>
+
+    </div>
+
+  </aside>
+
+
+  <main class="work">
+
+    <div class="toolbar">
+
+      <div>
+
+        Screen
+
+        <select id="screenSel"></select>
+
+        <button id="addScreen">
+          +
+        </button>
+
+        <button id="renameScreen">
+          Rename
+        </button>
+
+      </div>
+
+
+      <div>
+
+        <label class="inline-label">
+
+          <input
+            id="grid"
+            type="checkbox"
+            checked>
+
+          Grid
+
+        </label>
+
+        <label class="inline-label">
+
+          <input
+            id="snap"
+            type="checkbox"
+            checked>
+
+          Snap
+
+        </label>
+
+        Zoom
+
+        <select id="zoom">
+
+          <option value=".75">
+            75%
+          </option>
+
+          <option
+            value="1"
+            selected>
+            100%
+          </option>
+
+          <option value="1.25">
+            125%
+          </option>
+
+          <option value="1.5">
+            150%
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+
+    <div class="wrap">
+
+      <div
+        id="canvas"
+        class="canvas grid">
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <aside class="props">
+
+    <h3>
+      Object Properties
+    </h3>
+
+
+    <div id="none">
+      Select an object.
+    </div>
+
+
+    <div
+      id="panel"
+      hidden>
+
+      <label>
+        Name
+
+        <input id="name">
+      </label>
+
+
+      <label>
+        Text
+
+        <input id="text">
+      </label>
+
+
+      <div class="two">
+
+        <label>
+          X
+
+          <input
+            id="x"
+            type="number">
+        </label>
+
+
+        <label>
+          Y
+
+          <input
+            id="y"
+            type="number">
+        </label>
+
+
+        <label>
+          Width
+
+          <input
+            id="w"
+            type="number">
+        </label>
+
+
+        <label>
+          Height
+
+          <input
+            id="h"
+            type="number">
+        </label>
+
+      </div>
+
+
+      <label>
+        Font Size
+
+        <input
+          id="font"
+          type="number">
+      </label>
+
+
+      <div class="two">
+
+        <label>
+          Background
+
+          <input
+            id="bg"
+            type="color">
+        </label>
+
+
+        <label>
+          Foreground
+
+          <input
+            id="fg"
+            type="color">
+        </label>
+
+      </div>
+
+
+      <hr>
+
+
+      <label>
+        OPC UA Node ID
+
+        <input
+          id="node"
+          placeholder="ns=2;s=Application.GVL.Tag">
+      </label>
+
+
+      <label>
+        Binding
+
+        <select id="bind">
+
+          <option value="none">
+            None
+          </option>
+
+          <option value="read">
+            Read
+          </option>
+
+          <option value="write">
+            Write
+          </option>
+
+          <option value="readwrite">
+            Read / Write
+          </option>
+
+        </select>
+
+      </label>
+
+
+      <label>
+        Data Type
+
+        <select id="dtype">
+
+          <option>
+            BOOL
+          </option>
+
+          <option>
+            DINT
+          </option>
+
+          <option>
+            REAL
+          </option>
+
+          <option>
+            LREAL
+          </option>
+
+          <option>
+            STRING
+          </option>
+
+        </select>
+
+      </label>
+
+
+      <label>
+    Button Mode
+
+    <select id="buttonMode">
+
+        <option value="toggle">
+            Toggle
+        </option>
+
+        <option value="momentary">
+            Momentary
+        </option>
+
+        <option value="setTrue">
+            Set True
+        </option>
+
+        <option value="setFalse">
+            Set False
+        </option>
+
+        <option value="value">
+            Write Value
+        </option>
+
+    </select>
+</label>
+
+
+<label>
+    Write Value
+
+    <input
+        id="write"
+        placeholder="true / 1 / 75.0">
+</label>
+
+
+      <div class="two">
+
+        <label>
+          Min
+
+          <input
+            id="min"
+            type="number">
+        </label>
+
+
+        <label>
+          Max
+
+          <input
+            id="max"
+            type="number">
+        </label>
+
+      </div>
+
+
+      <label>
+        Units
+
+        <input id="units">
+      </label>
+
+
+      <label>
+        Navigation Target
+
+        <select id="navTarget"></select>
+      </label>
+
+
+      <button id="apply">
+        Apply
+      </button>
+
+    </div>
+
+
+    <h3>
+      Project
+    </h3>
+
+
+    <label>
+      Project Name
+
+      <input
+        id="projectName"
+        value="MyVirtualHMI">
+    </label>
+
+
+    <div class="two">
+
+      <label>
+        Width
+
+        <input
+          id="cw"
+          type="number"
+          value="1280">
+      </label>
+
+
+      <label>
+        Height
+
+        <input
+          id="ch"
+          type="number"
+          value="720">
+      </label>
+
+    </div>
+
+
+    <h3>
+      OPC UA
+    </h3>
+
+
+    <label>
+      Endpoint
+
+      <input
+        id="endpoint"
+        value="opc.tcp://10.200.200.45:4840">
+    </label>
+
+
+    <label>
+      Security
+
+      <select id="policy">
+
+        <option>
+          Basic256Sha256
+        </option>
+
+        <option>
+          None
+        </option>
+
+      </select>
+
+    </label>
+
+
+    <label>
+      Mode
+
+      <select id="mode">
+
+        <option value="SignAndEncrypt">
+          Sign & Encrypt
+        </option>
+
+        <option>
+          Sign
+        </option>
+
+        <option>
+          None
+        </option>
+
+      </select>
+
+    </label>
+
+
+    <label>
+      Username
+
+      <input
+        id="user"
+        value="admin">
+    </label>
+
+
+    <label>
+      Password
+
+      <input
+        id="password"
+        type="password"
+        placeholder="Not written into project JSON">
+    </label>
+
+  </aside>
+
+
+  <footer class="statusbar">
+
+    <span id="selectionStatus">
+      No selection
+    </span>
+
+    <span id="mouseStatus">
+      X: 0 Y: 0
+    </span>
+
+  </footer>
+
+</div>
+
+
+<div
+  id="previewModal"
+  class="modal"
+  hidden>
+
+  <div class="modalbox">
+
+    <div class="modalhead">
+
+      <strong>
+        Runtime Preview
+      </strong>
+
+      <button id="closePreview">
+        Close
+      </button>
+
+    </div>
+
+    <iframe id="previewFrame"></iframe>
+
+  </div>
+
+</div>
+
+
+<script src="builder.js"></script>
+
+</body>
+</html>

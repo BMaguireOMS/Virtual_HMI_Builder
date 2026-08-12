@@ -1,0 +1,573 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background: #14191f;
+
+    color: #eeeeee;
+}
+
+
+.app {
+    height: 100vh;
+
+    display: grid;
+
+    grid-template-columns:
+        190px
+        1fr
+        280px;
+
+    grid-template-rows:
+        48px
+        1fr
+        26px;
+
+    grid-template-areas:
+        "top top top"
+        "tools work props"
+        "status status status";
+}
+
+
+header {
+    grid-area: top;
+
+    background: #0d1115;
+
+    border-bottom:
+        1px solid #3b4650;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content:
+        space-between;
+
+    padding:
+        0 12px;
+}
+
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+
+button {
+    background: #37424d;
+
+    color: white;
+
+    border:
+        1px solid #596673;
+
+    border-radius: 4px;
+
+    padding:
+        6px 9px;
+
+    cursor: pointer;
+}
+
+
+button:hover {
+    background: #465361;
+}
+
+
+input,
+select {
+    width: 100%;
+
+    background: #10151a;
+
+    color: white;
+
+    border:
+        1px solid #56616c;
+
+    border-radius: 3px;
+
+    padding: 5px;
+
+    margin-top: 3px;
+}
+
+
+label {
+    display: block;
+
+    color: #adb7c0;
+
+    font-size: 12px;
+
+    margin:
+        7px 0;
+}
+
+
+.inline-label {
+    display: inline-block;
+
+    margin-right: 10px;
+}
+
+
+.inline-label input {
+    width: auto;
+}
+
+
+.actions {
+    display: flex;
+
+    gap: 5px;
+}
+
+
+.file-button {
+    display: inline-block;
+
+    background: #37424d;
+
+    color: white;
+
+    border:
+        1px solid #596673;
+
+    border-radius: 4px;
+
+    padding:
+        6px 9px;
+
+    margin: 0;
+
+    cursor: pointer;
+
+    font-size: 14px;
+}
+
+
+.tools,
+.props {
+    background: #20262d;
+
+    padding: 10px;
+
+    overflow: auto;
+}
+
+
+.tools {
+    grid-area: tools;
+
+    border-right:
+        1px solid #3b4650;
+}
+
+
+.props {
+    grid-area: props;
+
+    border-left:
+        1px solid #3b4650;
+}
+
+
+.work {
+    grid-area: work;
+
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+
+.toolbar {
+    height: 42px;
+
+    background: #252d35;
+
+    border-bottom:
+        1px solid #3b4650;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content:
+        space-between;
+
+    padding:
+        0 8px;
+}
+
+
+.toolbar select {
+    width: auto;
+}
+
+
+.wrap {
+    flex: 1;
+
+    overflow: auto;
+
+    padding: 28px;
+}
+
+
+.canvas {
+    position: relative;
+
+    width: 1280px;
+
+    height: 720px;
+
+    background-color:
+        #d8eeee;
+
+    box-shadow:
+        0 0 0 1px black;
+}
+
+
+.canvas.grid {
+    background-image:
+
+        linear-gradient(
+            rgba(0,0,0,.08)
+            1px,
+            transparent 1px
+        ),
+
+        linear-gradient(
+            90deg,
+            rgba(0,0,0,.08)
+            1px,
+            transparent 1px
+        );
+
+    background-size:
+        10px 10px;
+}
+
+
+.statusbar {
+    grid-area: status;
+
+    background: #0d1115;
+
+    border-top:
+        1px solid #3b4650;
+
+    color: #aab4be;
+
+    font-size: 11px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content:
+        space-between;
+
+    padding:
+        0 9px;
+}
+
+
+h3 {
+    font-size: 14px;
+
+    margin:
+        7px 0;
+}
+
+
+.group {
+    margin:
+        12px 0;
+}
+
+
+.group-title {
+    font-size: 11px;
+
+    color: #8fa0af;
+
+    text-transform:
+        uppercase;
+
+    margin-bottom: 5px;
+}
+
+
+.tool {
+    width: 100%;
+
+    margin:
+        2px 0;
+
+    text-align: left;
+}
+
+
+.two {
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 6px;
+}
+
+
+.obj {
+    position: absolute;
+
+    user-select: none;
+
+    touch-action: none;
+
+    border:
+        1px solid transparent;
+}
+
+
+.obj.selected {
+    outline:
+        2px solid #087eff;
+
+    outline-offset: 1px;
+}
+
+
+.handle {
+    position: absolute;
+
+    width: 10px;
+
+    height: 10px;
+
+    right: -6px;
+
+    bottom: -6px;
+
+    background: #087eff;
+
+    border:
+        1px solid white;
+
+    display: none;
+
+    cursor: nwse-resize;
+}
+
+
+.obj.selected .handle {
+    display: block;
+}
+
+
+.label {
+    display: flex;
+
+    align-items: center;
+
+    color: #111111;
+}
+
+
+.button,
+.nav,
+.toggle {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #9fcfcf;
+
+    color: #111111;
+
+    border:
+        2px outset #d8eeee;
+
+    font-weight: bold;
+}
+
+
+.num,
+.input {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #9fcfcf;
+
+    color: #111111;
+
+    border:
+        1px solid #222222;
+}
+
+
+.lamp {
+    border-radius: 50%;
+
+    background: #777777;
+
+    border:
+        2px solid #333333;
+}
+
+
+.gauge {
+    border-radius: 50%;
+
+    border:
+        8px solid #34495e;
+
+    background: white;
+
+    color: #111111;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+
+.bar {
+    background: #dddddd;
+
+    border:
+        1px solid #222222;
+
+    color: #111111;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+
+.alarm {
+    background: #ffea00;
+
+    color: #111111;
+
+    border:
+        1px solid black;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-weight: bold;
+}
+
+
+.trend {
+    background: #111111;
+
+    color: #66ff66;
+
+    border:
+        1px solid #555555;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+
+.image {
+    background: #eeeeee;
+
+    color: #333333;
+
+    border:
+        1px dashed #666666;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+
+.modal {
+    position: fixed;
+
+    inset: 0;
+
+    background:
+        rgba(0,0,0,.8);
+
+    padding: 18px;
+
+    z-index: 50;
+}
+
+
+.modalbox {
+    height: 100%;
+
+    background: #111111;
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+
+.modalhead {
+    height: 42px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content:
+        space-between;
+
+    padding:
+        0 8px;
+}
+
+
+iframe {
+    flex: 1;
+
+    border: 0;
+
+    background: white;
+}

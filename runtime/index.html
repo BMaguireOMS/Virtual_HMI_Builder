@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+<title>Galileo_Style_Test_HMI</title>
+
+
+<style>
+
+body {
+
+    margin: 0;
+
+    background: #222;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+}
+
+
+#screen {
+
+    position: relative;
+
+    margin: auto;
+
+    background: #d8eeee;
+
+    overflow: hidden;
+}
+
+
+.runtime-object {
+
+    position: absolute;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    box-sizing: border-box;
+}
+
+
+.button,
+.nav,
+.toggle {
+
+    border:
+        2px outset #d8eeee;
+
+    cursor: pointer;
+
+    touch-action: none;
+}
+
+
+.button:active,
+.toggle:active {
+
+    border:
+        2px inset #d8eeee;
+}
+
+
+.num,
+.input {
+
+    border:
+        1px solid #222;
+}
+
+
+.lamp {
+
+    border-radius: 50%;
+
+    border:
+        2px solid #333;
+}
+
+
+.gauge {
+
+    border-radius: 50%;
+
+    border:
+        8px solid #34495e;
+}
+
+
+.alarm {
+
+    border:
+        1px solid black;
+
+    font-weight: bold;
+}
+
+
+.trend {
+
+    border:
+        1px solid #555;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<div id="screen"></div>
+
+
+<script>
+
+const project =
+    {"name":"Galileo_Style_Test_HMI","canvas":{"width":640,"height":480},"opc":{"endpoint":"opc.tcp://10.200.200.45:4840","policy":"Basic256Sha256","mode":"SignAndEncrypt","username":"admin"},"screens":[{"name":"Main","objects":[{"id":"obj_topbar","type":"alarm","name":"Connection_Status","text":"PLC CONNECTION STATUS","x":0,"y":0,"w":640,"h":38,"z":1,"fontSize":20,"bg":"#00ff1e","fg":"#111111","node":"","binding":"none","dataType":"STRING","buttonMode":"value","writeValue":"","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_title","type":"label","name":"Screen_Title","text":"LMC216C OPC UA Test","x":32,"y":48,"w":530,"h":40,"z":2,"fontSize":28,"bg":"#d8eeee","fg":"#111111","node":"","binding":"none","dataType":"STRING","buttonMode":"value","writeValue":"","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_bool_label","type":"label","name":"Bool_Label","text":"Test BOOL","x":32,"y":106,"w":330,"h":52,"z":3,"fontSize":21,"bg":"#d8eeee","fg":"#111111","node":"","binding":"none","dataType":"STRING","buttonMode":"value","writeValue":"","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_bool_btn","type":"button","name":"Test_Bool_Toggle","text":"TOGGLE","x":362,"y":106,"w":200,"h":52,"z":4,"fontSize":18,"bg":"#9fcfcf","fg":"#111111","node":"ns=2;s=Application.GVL_OPC.G_xTestBool","binding":"readwrite","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":1,"units":"","navTarget":""},{"id":"obj_set_label","type":"label","name":"Setpoint_Label","text":"Test Setpoint","x":32,"y":166,"w":330,"h":52,"z":5,"fontSize":21,"bg":"#d8eeee","fg":"#111111","node":"","binding":"none","dataType":"STRING","buttonMode":"value","writeValue":"","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_setpoint","type":"input","name":"Test_Setpoint","text":"0.0","x":362,"y":166,"w":200,"h":52,"z":6,"fontSize":20,"bg":"#ffffff","fg":"#111111","node":"ns=2;s=Application.GVL_OPC.G_lrTestSetpoint","binding":"readwrite","dataType":"LREAL","buttonMode":"value","writeValue":"0.0","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_value_label","type":"label","name":"TestValue_Label","text":"PLC Test Value","x":32,"y":226,"w":330,"h":52,"z":7,"fontSize":21,"bg":"#d8eeee","fg":"#111111","node":"","binding":"none","dataType":"STRING","buttonMode":"value","writeValue":"","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_value","type":"num","name":"PLC_Test_Value","text":"0.0","x":362,"y":226,"w":200,"h":52,"z":8,"fontSize":23,"bg":"#9fcfcf","fg":"#111111","node":"ns=2;s=Application.GVL_OPC.G_lrTestValue","binding":"read","dataType":"LREAL","buttonMode":"value","writeValue":"","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_counter_label","type":"label","name":"Counter_Label","text":"PLC Counter","x":32,"y":286,"w":330,"h":52,"z":9,"fontSize":21,"bg":"#d8eeee","fg":"#111111","node":"","binding":"none","dataType":"STRING","buttonMode":"value","writeValue":"","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_counter","type":"num","name":"PLC_Counter","text":"0","x":362,"y":286,"w":200,"h":52,"z":10,"fontSize":23,"bg":"#9fcfcf","fg":"#111111","node":"ns=2;s=Application.GVL_OPC.G_diTestCounter","binding":"read","dataType":"DINT","buttonMode":"value","writeValue":"","min":0,"max":100000,"units":"","navTarget":""},{"id":"obj_bottom_test","type":"nav","name":"Bottom_Test","text":"TEST","x":0,"y":424,"w":110,"h":56,"z":11,"fontSize":18,"bg":"#9fcfcf","fg":"#111111","node":"","binding":"none","dataType":"BOOL","buttonMode":"value","writeValue":"","min":0,"max":1,"units":"","navTarget":"Main"},{"id":"obj_bottom_status","type":"nav","name":"Bottom_Status","text":"STATUS","x":110,"y":424,"w":110,"h":56,"z":12,"fontSize":18,"bg":"#9fcfcf","fg":"#111111","node":"","binding":"none","dataType":"BOOL","buttonMode":"value","writeValue":"","min":0,"max":1,"units":"","navTarget":"Main"},{"id":"obj_bottom_data","type":"nav","name":"Bottom_Data","text":"DATA","x":220,"y":424,"w":110,"h":56,"z":13,"fontSize":18,"bg":"#9fcfcf","fg":"#111111","node":"","binding":"none","dataType":"BOOL","buttonMode":"value","writeValue":"","min":0,"max":1,"units":"","navTarget":"Main"}]}],"currentScreen":"Main"};
+
+
+let currentScreen =
+    project.currentScreen;
+
+
+// Contains the newest values received
+// from the PLC.
+
+let latestValues = {};
+
+
+// ==========================================================
+// DRAW SCREEN
+// ==========================================================
+
+function renderScreen() {
+
+    const screen =
+        project.screens.find(
+            s =>
+                s.name ===
+                currentScreen
+        );
+
+
+    const root =
+        document.getElementById(
+            "screen"
+        );
+
+
+    root.innerHTML =
+        "";
+
+
+    root.style.width =
+        project.canvas.width +
+        "px";
+
+
+    root.style.height =
+        project.canvas.height +
+        "px";
+
+
+    screen.objects.forEach(
+        obj => {
+
+            let element;
+
+
+            if (
+                obj.type ===
+                "input"
+            ) {
+
+                element =
+                    document.createElement(
+                        "input"
+                    );
+
+                element.value =
+                    obj.text;
+
+            }
+
+            else {
+
+                element =
+                    document.createElement(
+                        "div"
+                    );
+
+                element.innerText =
+                    obj.text;
+            }
+
+
+            element.className =
+                "runtime-object " +
+                obj.type;
+
+
+            element.style.left =
+                obj.x + "px";
+
+            element.style.top =
+                obj.y + "px";
+
+            element.style.width =
+                obj.w + "px";
+
+            element.style.height =
+                obj.h + "px";
+
+            element.style.background =
+                obj.bg;
+
+            element.style.color =
+                obj.fg;
+
+            element.style.fontSize =
+                obj.fontSize + "px";
+
+
+            element.dataset.node =
+                obj.node;
+
+            element.dataset.binding =
+                obj.binding;
+
+            element.dataset.dtype =
+                obj.dataType;
+
+            element.dataset.objectId =
+                obj.id;
+
+
+            // ==============================================
+            // NAVIGATION BUTTON
+            // ==============================================
+
+            if (
+                obj.type ===
+                "nav"
+            ) {
+
+                element.onclick =
+                    () => {
+
+                        if (
+                            obj.navTarget
+                        ) {
+
+                            currentScreen =
+                                obj.navTarget;
+
+                            renderScreen();
+
+                            updateDisplay();
+                        }
+
+                    };
+            }
+
+
+            // ==============================================
+            // BOOL / WRITE BUTTONS
+            // ==============================================
+
+            if (
+                obj.type ===
+                "button" ||
+                obj.type ===
+                "toggle"
+            ) {
+
+                configureButton(
+                    element,
+                    obj
+                );
+            }
+
+
+            // ==============================================
+            // NUMERIC INPUT
+            // ==============================================
+
+            if (
+                obj.type ===
+                "input"
+            ) {
+
+                element.addEventListener(
+                    "change",
+                    () => {
+
+                        let value =
+                            element.value;
+
+
+                        if (
+                            obj.dataType ===
+                            "DINT"
+                        ) {
+
+                            value =
+                                parseInt(
+                                    value
+                                );
+                        }
+
+
+                        else if (
+                            obj.dataType ===
+                            "REAL" ||
+                            obj.dataType ===
+                            "LREAL"
+                        ) {
+
+                            value =
+                                parseFloat(
+                                    value
+                                );
+                        }
+
+
+                        writePLCValue(
+                            obj.node,
+                            value,
+                            obj.dataType
+                        );
+                    }
+                );
+            }
+
+
+            root.appendChild(
+                element
+            );
+
+        }
+    );
+}
+
+
+// ==========================================================
+// CONFIGURE BUTTON BEHAVIOR
+// ==========================================================
+
+function configureButton(
+    element,
+    obj
+) {
+
+    if (!obj.node) {
+        return;
+    }
+
+
+    const mode =
+        obj.buttonMode ||
+        "toggle";
+
+
+    // ------------------------------------------------------
+    // TOGGLE
+    // ------------------------------------------------------
+
+    if (
+        mode ===
+        "toggle"
+    ) {
+
+        element.addEventListener(
+            "click",
+            async () => {
+
+                const current =
+                    Boolean(
+                        latestValues[
+                            obj.node
+                        ]
+                    );
+
+
+                await writePLCValue(
+                    obj.node,
+                    !current,
+                    "BOOL"
+                );
+            }
+        );
+
+        return;
+    }
+
+
+    // ------------------------------------------------------
+    // SET TRUE
+    // ------------------------------------------------------
+
+    if (
+        mode ===
+        "setTrue"
+    ) {
+
+        element.addEventListener(
+            "click",
+            () => {
+
+                writePLCValue(
+                    obj.node,
+                    true,
+                    "BOOL"
+                );
+            }
+        );
+
+        return;
+    }
+
+
+    // ------------------------------------------------------
+    // SET FALSE
+    // ------------------------------------------------------
+
+    if (
+        mode ===
+        "setFalse"
+    ) {
+
+        element.addEventListener(
+            "click",
+            () => {
+
+                writePLCValue(
+                    obj.node,
+                    false,
+                    "BOOL"
+                );
+            }
+        );
+
+        return;
+    }
+
+
+    // ------------------------------------------------------
+    // MOMENTARY
+    // ------------------------------------------------------
+
+    if (
+        mode ===
+        "momentary"
+    ) {
+
+        const press =
+            event => {
+
+                event.preventDefault();
+
+                writePLCValue(
+                    obj.node,
+                    true,
+                    "BOOL"
+                );
+            };
+
+
+        const release =
+            event => {
+
+                event.preventDefault();
+
+                writePLCValue(
+                    obj.node,
+                    false,
+                    "BOOL"
+                );
+            };
+
+
+        element.addEventListener(
+            "pointerdown",
+            press
+        );
+
+
+        element.addEventListener(
+            "pointerup",
+            release
+        );
+
+
+        element.addEventListener(
+            "pointercancel",
+            release
+        );
+
+
+        element.addEventListener(
+            "pointerleave",
+            event => {
+
+                if (
+                    event.buttons !== 0
+                ) {
+
+                    release(event);
+                }
+            }
+        );
+
+
+        return;
+    }
+
+
+    // ------------------------------------------------------
+    // GENERIC WRITE VALUE
+    // ------------------------------------------------------
+
+    element.addEventListener(
+        "click",
+        () => {
+
+            let value =
+                obj.writeValue;
+
+
+            if (
+                obj.dataType ===
+                "BOOL"
+            ) {
+
+                value =
+                    String(value)
+                        .toLowerCase()
+                        ===
+                        "true";
+            }
+
+
+            else if (
+                obj.dataType ===
+                "DINT"
+            ) {
+
+                value =
+                    parseInt(value);
+            }
+
+
+            else if (
+                obj.dataType ===
+                "REAL" ||
+                obj.dataType ===
+                "LREAL"
+            ) {
+
+                value =
+                    parseFloat(value);
+            }
+
+
+            writePLCValue(
+                obj.node,
+                value,
+                obj.dataType
+            );
+        }
+    );
+}
+
+
+// ==========================================================
+// WRITE VALUE TO PYTHON BACKEND
+// ==========================================================
+
+async function writePLCValue(
+    node,
+    value,
+    dataType
+) {
+
+    if (!node) {
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/write",
+                {
+
+                    method:
+                        "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body:
+                        JSON.stringify(
+                            {
+
+                                node:
+                                    node,
+
+                                value:
+                                    value,
+
+                                dataType:
+                                    dataType
+                            }
+                        )
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (
+            !result.success
+        ) {
+
+            console.error(
+                "PLC write failed:",
+                result.error
+            );
+        }
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "PLC write error:",
+            error
+        );
+    }
+}
+
+
+// ==========================================================
+// GET TAG VALUES FROM PYTHON
+// ==========================================================
+
+async function updateTags() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/tags"
+            );
+
+
+        latestValues =
+            await response.json();
+
+
+        updateDisplay();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "PLC read error:",
+            error
+        );
+    }
+}
+
+
+// ==========================================================
+// UPDATE DISPLAYED VALUES
+// ==========================================================
+
+function updateDisplay() {
+
+    document
+        .querySelectorAll(
+            "[data-node]"
+        )
+        .forEach(
+            element => {
+
+                const node =
+                    element.dataset.node;
+
+
+                if (
+                    !node ||
+                    !(node in latestValues)
+                ) {
+
+                    return;
+                }
+
+
+                const value =
+                    latestValues[node];
+
+
+                const objectId =
+                    element.dataset.objectId;
+
+
+                const obj =
+                    project.screens
+                        .flatMap(
+                            s =>
+                                s.objects
+                        )
+                        .find(
+                            o =>
+                                o.id ===
+                                objectId
+                        );
+
+
+                if (!obj) {
+                    return;
+                }
+
+
+                // ------------------------------------------
+                // INPUT
+                // ------------------------------------------
+
+                if (
+                    element.tagName ===
+                    "INPUT"
+                ) {
+
+                    if (
+                        document.activeElement
+                        !==
+                        element
+                    ) {
+
+                        element.value =
+                            value;
+                    }
+
+
+                    return;
+                }
+
+
+                // ------------------------------------------
+                // BUTTON
+                // ------------------------------------------
+
+                if (
+                    obj.type ===
+                    "button" ||
+                    obj.type ===
+                    "toggle"
+                ) {
+
+                    if (
+                        obj.dataType ===
+                        "BOOL"
+                    ) {
+
+                        element.dataset.state =
+                            value
+                            ? "true"
+                            : "false";
+
+
+                        if (value) {
+
+                            element.style.boxShadow =
+                                "inset 0 0 0 4px #36a852";
+
+                        }
+
+                        else {
+
+                            element.style.boxShadow =
+                                "none";
+                        }
+                    }
+
+
+                    return;
+                }
+
+
+                // ------------------------------------------
+                // LAMP
+                // ------------------------------------------
+
+                if (
+                    obj.type ===
+                    "lamp"
+                ) {
+
+                    element.style.background =
+                        value
+                        ? "#33cc55"
+                        : "#777777";
+
+
+                    return;
+                }
+
+
+                // ------------------------------------------
+                // EVERYTHING ELSE
+                // ------------------------------------------
+
+                let displayValue =
+                    value;
+
+
+                if (
+                    obj.units
+                ) {
+
+                    displayValue +=
+                        " " +
+                        obj.units;
+                }
+
+
+                element.innerText =
+                    displayValue;
+
+            }
+        );
+}
+
+
+// ==========================================================
+// START RUNTIME
+// ==========================================================
+
+renderScreen();
+
+updateTags();
+
+setInterval(
+    updateTags,
+    250
+);
+
+</script>
+
+</body>
+
+</html>

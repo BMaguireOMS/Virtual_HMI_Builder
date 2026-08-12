@@ -797,6 +797,35 @@ $("y").addEventListener(
     }
 );
 
+// Font Size
+$("font").addEventListener(
+    "input",
+    () => {
+
+        const obj = getSelectedObject();
+
+        if (!obj) {
+            return;
+        }
+
+        obj.fontSize =
+            Number(
+                $("font").value
+            );
+
+        const element =
+            document.querySelector(
+                `[data-id="${obj.id}"]`
+            );
+
+        if (element) {
+
+            element.style.fontSize =
+                obj.fontSize + "px";
+        }
+    }
+);
+
 // ============================================================
 // DRAG
 // ============================================================

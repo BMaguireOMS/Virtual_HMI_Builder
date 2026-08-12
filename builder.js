@@ -2450,6 +2450,171 @@ document.addEventListener(
 
 
 // ============================================================
+// RUN HMI DIRECTLY FROM BUILDER
+// ============================================================
+
+async function runHMI() {
+
+    console.log("RUN HMI clicked");
+
+    try {
+
+        // Save any currently edited object properties
+        if (getSelectedObject()) {
+            applyProperties(false);
+        }
+
+        updateProjectSettings();
+
+
+        // Generate the actual runtime HTML
+        const runtimeHTML =
+            createRuntimeHTML();
+
+
+        // Send BOTH project JSON and runtime HTML
+        // to builder_server.py
+
+        const saveResponse = await fetch(
+            "/api/save-runtime",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    project: project,
+                    runtimeHTML: runtimeHTML
+                })
+            }
+        );
+
+
+        const saveResult =
+            await saveResponse.json();
+
+
+        console.log(
+            "Save runtime:",
+            saveResult
+        );
+
+
+        if (!saveResult.success) {
+
+            alert(
+                "Could not build HMI runtime."
+            );
+
+            return;
+        }
+
+
+        // Start runtime_server.py
+
+        const startResponse = await fetch(
+            "/api/start-runtime",
+            {
+                method: "POST"
+            }
+        );
+
+
+        const startResult =
+            await startResponse.json();
+
+
+        if (!startResult.success) {
+
+            alert(
+                "Could not start HMI runtime."
+            );
+
+            return;
+        }
+
+
+        // Open actual runtime HMI
+
+        setTimeout(
+            () => {
+
+                window.open(
+                    "http://localhost:8000",
+                    "_blank"
+                );
+
+            },
+            1200
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "RUN HMI ERROR:",
+            error
+        );
+
+        alert(
+            "Could not run HMI. Check browser console."
+        );
+    }
+}
+
+
+// ============================================================
+// STOP HMI
+// ============================================================
+
+async function stopHMI() {
+
+    console.log("STOP HMI clicked");
+
+    try {
+
+        const response = await fetch(
+            "/api/stop-runtime",
+            {
+                method: "POST"
+            }
+        );
+
+        const result =
+            await response.json();
+
+        console.log(
+            "Stop runtime result:",
+            result
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "STOP HMI ERROR:",
+            error
+        );
+    }
+}
+
+
+// ============================================================
+// BUTTON EVENTS
+// ============================================================
+
+$("runBtn").onclick =
+    runHMI;
+
+$("stopBtn").onclick =
+    stopHMI;
+
+
+// ============================================================
 // START BUILDER
 // ============================================================
 

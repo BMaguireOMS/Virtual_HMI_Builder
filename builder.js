@@ -140,6 +140,7 @@ let project = {
 
 let selectedId = null;
 let zCounter = 10;
+let clipboardObject = null;
 
 
 // ============================================================
@@ -827,6 +828,84 @@ function duplicateSelected() {
     render();
 }
 
+// ============================================================
+// COPY / PASTE / CUT
+// ============================================================
+
+function copySelected() {
+
+    const obj = getSelectedObject();
+
+    if (!obj) {
+        return;
+    }
+
+    clipboardObject = JSON.parse(
+        JSON.stringify(obj)
+    );
+
+    console.log(
+        "Copied object:",
+        clipboardObject.name
+    );
+}
+
+
+function pasteObject() {
+
+    if (!clipboardObject) {
+        return;
+    }
+
+    const copy = JSON.parse(
+        JSON.stringify(clipboardObject)
+    );
+
+    copy.id = uid();
+
+    copy.name =
+        copy.name + "_copy";
+
+    copy.x += 20;
+    copy.y += 20;
+
+    copy.z =
+        ++zCounter;
+
+    currentScreen()
+        .objects
+        .push(copy);
+
+    selectedId =
+        copy.id;
+
+    // Keep the clipboard aligned with the newest pasted copy,
+    // so repeated Ctrl+V continues offsetting objects.
+    clipboardObject =
+        JSON.parse(
+            JSON.stringify(copy)
+        );
+
+    render();
+}
+
+
+function cutSelected() {
+
+    const obj =
+        getSelectedObject();
+
+    if (!obj) {
+        return;
+    }
+
+    clipboardObject =
+        JSON.parse(
+            JSON.stringify(obj)
+        );
+
+    deleteSelected();
+}
 
 // ============================================================
 // SCREEN LIST
@@ -2425,19 +2504,74 @@ document.addEventListener(
     "keydown",
     event => {
 
+        // Don't trigger builder shortcuts while typing
+        // inside an input/select field.
+        const active =
+            document.activeElement;
+
+        const typing =
+            active &&
+            (
+                active.tagName === "INPUT" ||
+                active.tagName === "TEXTAREA" ||
+                active.tagName === "SELECT"
+            );
+
+
+        // DELETE
         if (
-            event.key ===
-            "Delete"
+            event.key === "Delete" &&
+            !typing
         ) {
 
             deleteSelected();
         }
 
 
+        // CTRL + C
         if (
             event.ctrlKey &&
-            event.key.toLowerCase() ===
-            "d"
+            event.key.toLowerCase() === "c" &&
+            !typing
+        ) {
+
+            event.preventDefault();
+
+            copySelected();
+        }
+
+
+        // CTRL + V
+        if (
+            event.ctrlKey &&
+            event.key.toLowerCase() === "v" &&
+            !typing
+        ) {
+
+            event.preventDefault();
+
+            pasteObject();
+        }
+
+
+        // CTRL + X
+        if (
+            event.ctrlKey &&
+            event.key.toLowerCase() === "x" &&
+            !typing
+        ) {
+
+            event.preventDefault();
+
+            cutSelected();
+        }
+
+
+        // CTRL + D
+        if (
+            event.ctrlKey &&
+            event.key.toLowerCase() === "d" &&
+            !typing
         ) {
 
             event.preventDefault();

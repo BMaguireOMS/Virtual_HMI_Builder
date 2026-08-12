@@ -356,6 +356,18 @@ h3 {
     outline-offset: 1px;
 }
 
+.multi-selected {
+    outline: 2px solid #1687ff !important;
+    outline-offset: 2px;
+}
+
+.selection-box {
+    position: absolute;
+    border: 1px dashed #1687ff;
+    background: rgba(22, 135, 255, 0.12);
+    pointer-events: none;
+    z-index: 99999;
+}
 
 .handle {
     position: absolute;

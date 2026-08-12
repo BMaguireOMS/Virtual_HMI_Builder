@@ -142,6 +142,20 @@ let selectedId = null;
 let zCounter = 10;
 let clipboardObject = null;
 
+let selectedIds = new Set();
+
+let selectionBox = null;
+
+let selectionStartX = 0;
+let selectionStartY = 0;
+
+let isSelecting = false;
+
+let undoStack = [];
+let redoStack = [];
+
+const MAX_HISTORY = 50;
+
 
 // ============================================================
 // HELPERS
@@ -187,6 +201,123 @@ function getSelectedObject() {
     );
 }
 
+function updateSelectionVisuals() {
+
+    document
+        .querySelectorAll(".obj")
+        .forEach(element => {
+
+            const id =
+                element.dataset.id;
+
+            element.classList.toggle(
+                "multi-selected",
+                selectedIds.has(id)
+            );
+
+            element.classList.toggle(
+                "selected",
+                id === selectedId
+            );
+        });
+
+
+    const obj =
+        getSelectedObject();
+
+
+    $("none").hidden =
+        !!obj;
+
+    $("panel").hidden =
+        !obj;
+
+
+    if (!obj) {
+
+        $("selectionStatus").innerText =
+            selectedIds.size > 0
+                ? `${selectedIds.size} objects selected`
+                : "No selection";
+
+        return;
+    }
+
+
+    if (selectedIds.size > 1) {
+
+        $("selectionStatus").innerText =
+            `${selectedIds.size} objects selected`;
+
+    } else {
+
+        $("selectionStatus").innerText =
+            "Selected: " + obj.name;
+    }
+
+
+    updatePropertyPanel();
+}
+
+// ============================================================
+// MULTI-SELECTION
+// ============================================================
+
+function clearSelection() {
+
+    selectedIds.clear();
+
+    selectedId = null;
+
+    updateSelectionVisuals();
+}
+
+
+function selectOnly(id) {
+
+    selectedIds.clear();
+
+    selectedIds.add(id);
+
+    selectedId = id;
+
+    updateSelectionVisuals();
+}
+
+
+function toggleSelection(id) {
+
+    if (selectedIds.has(id)) {
+
+        selectedIds.delete(id);
+
+        if (selectedId === id) {
+
+            const remaining =
+                Array.from(selectedIds);
+
+            selectedId =
+                remaining.length
+                    ? remaining[remaining.length - 1]
+                    : null;
+        }
+
+    } else {
+
+        selectedIds.add(id);
+
+        selectedId = id;
+    }
+    updateSelectionVisuals();
+}
+
+
+function getSelectedObjects() {
+
+    return currentScreen().objects.filter(
+        obj => selectedIds.has(obj.id)
+    );
+}
 
 // ============================================================
 // CREATE OBJECT
@@ -240,8 +371,13 @@ function createObject(type) {
         navTarget: ""
     };
 
+    saveHistory();
 
     currentScreen().objects.push(obj);
+
+    // Make the newly created object the only selected object
+    selectedIds.clear();
+    selectedIds.add(obj.id);
 
     selectedId = obj.id;
 
@@ -299,6 +435,12 @@ function createObjectElement(obj) {
     element.dataset.id =
         obj.id;
 
+    if (selectedIds.has(obj.id)) {
+
+    element.classList.add(
+        "multi-selected"
+    );
+    }
 
     element.style.left =
         obj.x + "px";
@@ -383,43 +525,22 @@ function selectObject(id) {
     selectedId = id;
 
 
-    document
-        .querySelectorAll(".obj")
-        .forEach(element => {
+        if (id) {
 
-            element.classList.toggle(
-                "selected",
-                element.dataset.id === id
-            );
+            if (!selectedIds.has(id)) {
 
-        });
+                selectedIds.clear();
 
+                selectedIds.add(id);
+            }
 
-    const obj =
-        getSelectedObject();
+        } else {
 
-
-    $("none").hidden =
-        !!obj;
-
-    $("panel").hidden =
-        !obj;
+            selectedIds.clear();
+        }
 
 
-    if (!obj) {
-
-        $("selectionStatus").innerText =
-            "No selection";
-
-        return;
-    }
-
-
-    $("selectionStatus").innerText =
-        "Selected: " + obj.name;
-
-
-    updatePropertyPanel();
+    updateSelectionVisuals();
 }
 
 
@@ -508,6 +629,7 @@ function applyProperties(renderAfter = true) {
         return;
     }
 
+    saveHistory();
 
     obj.name =
         $("name").value;
@@ -593,8 +715,35 @@ function beginDrag(
     event.stopPropagation();
 
 
-    selectObject(obj.id);
+    // ========================================================
+    // HANDLE SELECTION
+    // ========================================================
 
+    if (event.ctrlKey) {
+
+        toggleSelection(obj.id);
+
+        // If Ctrl+Click removed this object from selection,
+        // don't start dragging it.
+        if (!selectedIds.has(obj.id)) {
+            return;
+        }
+
+    } else {
+
+        // Clicking an object that isn't already selected
+        // makes it the only selected object.
+        if (!selectedIds.has(obj.id)) {
+
+            selectOnly(obj.id);
+        }
+    }
+
+
+    // ========================================================
+    // START DRAG
+    // ========================================================
+    saveHistory();
 
     const startX =
         event.clientX;
@@ -603,40 +752,103 @@ function beginDrag(
         event.clientY;
 
 
-    const originalX =
-        obj.x;
+    // Get ALL selected objects
+    const selectedObjects =
+        getSelectedObjects();
 
-    const originalY =
-        obj.y;
 
+    // Store the original position of every selected object
+    const startPositions =
+        new Map();
+
+
+    selectedObjects.forEach(
+        selectedObj => {
+
+            startPositions.set(
+                selectedObj.id,
+                {
+                    x: selectedObj.x,
+                    y: selectedObj.y
+                }
+            );
+
+        }
+    );
+
+
+    // ========================================================
+    // MOVE
+    // ========================================================
 
     function move(event) {
 
-        obj.x =
-            snapValue(
-                originalX +
-                event.clientX -
-                startX
-            );
+        let deltaX =
+            event.clientX -
+            startX;
 
-        obj.y =
-            snapValue(
-                originalY +
-                event.clientY -
-                startY
-            );
+        let deltaY =
+            event.clientY -
+            startY;
 
 
-        element.style.left =
-            obj.x + "px";
+        // Snap the movement itself to the grid
+        if ($("snap").checked) {
 
-        element.style.top =
-            obj.y + "px";
+            deltaX =
+                Math.round(deltaX / 10) * 10;
+
+            deltaY =
+                Math.round(deltaY / 10) * 10;
+        }
 
 
+        selectedObjects.forEach(
+            selectedObj => {
+
+                const original =
+                    startPositions.get(
+                        selectedObj.id
+                    );
+
+
+                selectedObj.x =
+                    original.x +
+                    deltaX;
+
+                selectedObj.y =
+                    original.y +
+                    deltaY;
+
+
+                // Find this object's visual element
+                const selectedElement =
+                    document.querySelector(
+                        `[data-id="${selectedObj.id}"]`
+                    );
+
+
+                if (selectedElement) {
+
+                    selectedElement.style.left =
+                        selectedObj.x + "px";
+
+                    selectedElement.style.top =
+                        selectedObj.y + "px";
+                }
+
+            }
+        );
+
+
+        // Update X/Y fields for the primary selected object
         updatePropertyPanel();
     }
 
+
+    // ========================================================
+    // STOP DRAG
+    // ========================================================
 
     function stop() {
 
@@ -657,11 +869,200 @@ function beginDrag(
         move
     );
 
+
     window.addEventListener(
         "pointerup",
         stop
     );
 }
+
+// ============================================================
+// DRAG SELECTION BOX
+// ============================================================
+
+canvas.addEventListener(
+    "pointerdown",
+    event => {
+
+        // Only start selection box on empty canvas
+        if (event.target !== canvas) {
+            return;
+        }
+
+        const rect =
+            canvas.getBoundingClientRect();
+
+        selectionStartX =
+            event.clientX - rect.left;
+
+        selectionStartY =
+            event.clientY - rect.top;
+
+        isSelecting = true;
+
+
+        // Clear old selection unless Ctrl is held
+        if (!event.ctrlKey) {
+
+            selectedIds.clear();
+            selectedId = null;
+
+            updateSelectionVisuals();
+        }
+
+
+        selectionBox =
+            document.createElement("div");
+
+        selectionBox.className =
+            "selection-box";
+
+
+        selectionBox.style.left =
+            selectionStartX + "px";
+
+        selectionBox.style.top =
+            selectionStartY + "px";
+
+        selectionBox.style.width =
+            "0px";
+
+        selectionBox.style.height =
+            "0px";
+
+
+        canvas.appendChild(
+            selectionBox
+        );
+    }
+);
+
+document.addEventListener(
+    "pointermove",
+    event => {
+
+        if (
+            !isSelecting ||
+            !selectionBox
+        ) {
+            return;
+        }
+
+
+        const rect =
+            canvas.getBoundingClientRect();
+
+
+        const currentX =
+            event.clientX - rect.left;
+
+        const currentY =
+            event.clientY - rect.top;
+
+
+        const left =
+            Math.min(
+                selectionStartX,
+                currentX
+            );
+
+        const top =
+            Math.min(
+                selectionStartY,
+                currentY
+            );
+
+        const width =
+            Math.abs(
+                currentX -
+                selectionStartX
+            );
+
+        const height =
+            Math.abs(
+                currentY -
+                selectionStartY
+            );
+
+
+        selectionBox.style.left =
+            left + "px";
+
+        selectionBox.style.top =
+            top + "px";
+
+        selectionBox.style.width =
+            width + "px";
+
+        selectionBox.style.height =
+            height + "px";
+    }
+);
+
+document.addEventListener(
+    "pointerup",
+    event => {
+
+        if (
+            !isSelecting ||
+            !selectionBox
+        ) {
+            return;
+        }
+
+
+        const boxRect =
+            selectionBox.getBoundingClientRect();
+
+
+        currentScreen().objects.forEach(
+            obj => {
+
+                const element =
+                    document.querySelector(
+                        `[data-id="${obj.id}"]`
+                    );
+
+
+                if (!element) {
+                    return;
+                }
+
+
+                const objectRect =
+                    element.getBoundingClientRect();
+
+
+                const inside =
+                    objectRect.left >= boxRect.left &&
+                    objectRect.right <= boxRect.right &&
+                    objectRect.top >= boxRect.top &&
+                    objectRect.bottom <= boxRect.bottom;
+
+
+                if (inside) {
+
+                    selectedIds.add(
+                        obj.id
+                    );
+
+                    selectedId =
+                        obj.id;
+                }
+            }
+        );
+
+
+        selectionBox.remove();
+
+        selectionBox = null;
+
+        isSelecting = false;
+
+
+        updateSelectionVisuals();
+    }
+);
 
 
 // ============================================================
@@ -673,7 +1074,7 @@ function beginResize(
     obj,
     element
 ) {
-
+    saveHistory();
     event.preventDefault();
     event.stopPropagation();
 
@@ -759,20 +1160,39 @@ function beginResize(
 
 function deleteSelected() {
 
-    if (!selectedId) {
+    if (
+        selectedIds.size === 0 &&
+        !selectedId
+    ) {
         return;
     }
 
+    saveHistory();
 
-    currentScreen().objects =
-        currentScreen()
-            .objects
-            .filter(
-                obj =>
-                    obj.id !== selectedId
-            );
+    // If there are multiple selected objects,
+    // delete all of them.
+    if (selectedIds.size > 0) {
 
+        currentScreen().objects =
+            currentScreen()
+                .objects
+                .filter(
+                    obj =>
+                        !selectedIds.has(obj.id)
+                );
 
+    } else {
+
+        currentScreen().objects =
+            currentScreen()
+                .objects
+                .filter(
+                    obj =>
+                        obj.id !== selectedId
+                );
+    }
+
+    selectedIds.clear();
     selectedId = null;
 
     render();
@@ -871,6 +1291,8 @@ function pasteObject() {
 
     copy.z =
         ++zCounter;
+
+    saveHistory();
 
     currentScreen()
         .objects
@@ -1273,6 +1695,85 @@ function newProject() {
     render();
 }
 
+// ============================================================
+// UNDO / REDO HISTORY
+// ============================================================
+
+function saveHistory() {
+
+    const snapshot =
+        JSON.stringify(project);
+
+    // Don't save identical consecutive states
+    if (
+        undoStack.length > 0 &&
+        undoStack[undoStack.length - 1] === snapshot
+    ) {
+        return;
+    }
+
+    undoStack.push(snapshot);
+
+    // Limit memory usage
+    if (undoStack.length > MAX_HISTORY) {
+        undoStack.shift();
+    }
+
+    // A new change invalidates redo history
+    redoStack = [];
+}
+
+
+function undo() {
+
+    if (undoStack.length === 0) {
+        return;
+    }
+
+    // Save current state for Redo
+    redoStack.push(
+        JSON.stringify(project)
+    );
+
+    // Restore previous state
+    project =
+        JSON.parse(
+            undoStack.pop()
+        );
+
+    selectedId = null;
+    selectedIds.clear();
+
+    render();
+
+    console.log("Undo");
+}
+
+
+function redo() {
+
+    if (redoStack.length === 0) {
+        return;
+    }
+
+    // Current state becomes undoable
+    undoStack.push(
+        JSON.stringify(project)
+    );
+
+    // Restore redo state
+    project =
+        JSON.parse(
+            redoStack.pop()
+        );
+
+    selectedId = null;
+    selectedIds.clear();
+
+    render();
+
+    console.log("Redo");
+}
 
 // ============================================================
 // CREATE RUNTIME HTML
@@ -2527,6 +3028,45 @@ document.addEventListener(
             deleteSelected();
         }
 
+        // CTRL + Z = UNDO
+if (
+    event.ctrlKey &&
+    !event.shiftKey &&
+    event.key.toLowerCase() === "z" &&
+    !typing
+) {
+
+    event.preventDefault();
+
+    undo();
+}
+
+
+        // CTRL + Y = REDO
+        if (
+            event.ctrlKey &&
+            event.key.toLowerCase() === "y" &&
+            !typing
+        ) {
+
+            event.preventDefault();
+
+            redo();
+        }
+
+
+        // CTRL + SHIFT + Z = REDO
+        if (
+            event.ctrlKey &&
+            event.shiftKey &&
+            event.key.toLowerCase() === "z" &&
+            !typing
+        ) {
+
+            event.preventDefault();
+
+            redo();
+        }
 
         // CTRL + C
         if (

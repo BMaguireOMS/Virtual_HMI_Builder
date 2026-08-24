@@ -2,6 +2,8 @@ const $ = (id) => document.getElementById(id);
 
 const canvas = $("canvas");
 
+const wrap = document.querySelector(".wrap");
+
 
 // ============================================================
 // DEFAULT OBJECT TYPES
@@ -324,6 +326,19 @@ function getSelectedObject() {
     return currentScreen().objects.find(
         obj => obj.id === selectedId
     );
+}
+
+// ============================================================
+// CLEAR OBJECT SELECTION
+// ============================================================
+
+function clearSelection() {
+
+    selectedIds.clear();
+
+    selectedId = null;
+
+    render();
 }
 
 function updateSelectionVisuals() {
@@ -1669,12 +1684,12 @@ function beginDrag(
 // DRAG SELECTION BOX
 // ============================================================
 
-canvas.addEventListener(
+wrap.addEventListener(
     "pointerdown",
     event => {
 
-        // Only start selection box on empty canvas
-        if (event.target !== canvas) {
+        // Do not start selection when clicking an HMI object
+        if (event.target.closest(".obj")) {
             return;
         }
 
@@ -1723,6 +1738,33 @@ canvas.addEventListener(
         canvas.appendChild(
             selectionBox
         );
+    }
+);
+
+// ============================================================
+// CLICK OUTSIDE OBJECTS TO DESELECT
+// ============================================================
+
+document.addEventListener(
+    "pointerdown",
+    event => {
+
+        // Keep selection when clicking an HMI object
+        if (event.target.closest(".obj")) {
+            return;
+        }
+
+        // Keep selection while editing properties
+        if (event.target.closest(".props")) {
+            return;
+        }
+
+        // Don't interfere with toolbox buttons
+        if (event.target.closest(".tool")) {
+            return;
+        }
+
+        clearSelection();
     }
 );
 
@@ -3896,6 +3938,17 @@ document.addEventListener(
         ) {
 
             deleteSelected();
+        }
+
+        // ESCAPE = CLEAR SELECTION
+        if (
+            event.key === "Escape" &&
+            !typing
+        ) {
+
+            event.preventDefault();
+
+            clearSelection();
         }
 
         // CTRL + Z = UNDO

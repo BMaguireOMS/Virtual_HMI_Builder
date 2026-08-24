@@ -206,6 +206,37 @@ class BuilderHandler(SimpleHTTPRequestHandler):
                 )
 
 
+                # --------------------------------------------
+                # READ PASSWORD SENT FROM THE BUILDER
+                # --------------------------------------------
+
+                request_data = {}
+
+                if raw_body:
+
+                    request_data = json.loads(
+                        raw_body.decode("utf-8")
+                    )
+
+
+                opc_password = request_data.get(
+                    "password",
+                    ""
+                )
+
+
+                # Create environment for runtime_server.py
+                runtime_env = os.environ.copy()
+
+                runtime_env[
+                    "HMI_OPC_PASSWORD"
+                ] = opc_password
+
+
+                # --------------------------------------------
+                # START RUNTIME PROCESS
+                # --------------------------------------------
+
                 if (
                     runtime_process is None
                     or runtime_process.poll() is not None
@@ -220,7 +251,8 @@ class BuilderHandler(SimpleHTTPRequestHandler):
                         [
                             sys.executable,
                             "runtime_server.py"
-                        ]
+                        ],
+                        env=runtime_env
                     )
 
 

@@ -10,7 +10,7 @@
     name="viewport"
     content="width=device-width, initial-scale=1.0">
 
-<title>Galileo_Style_Test_HMI</title>
+<title>MyVirtualHMI</title>
 
 
 <style>
@@ -49,6 +49,14 @@ body {
     align-items: center;
 
     justify-content: center;
+
+    box-sizing: border-box;
+}
+
+.panel {
+    border: 1px solid #c5cdd3;
+
+    border-radius: 4px;
 
     box-sizing: border-box;
 }
@@ -129,7 +137,7 @@ body {
 <script>
 
 const project =
-    {"name":"Galileo_Style_Test_HMI","canvas":{"width":640,"height":480},"opc":{"endpoint":"opc.tcp://10.200.200.45:4840","policy":"Basic256Sha256","mode":"SignAndEncrypt","username":"admin"},"screens":[{"name":"Main","objects":[{"id":"obj_topbar","type":"alarm","name":"Connection_Status","text":"PLC CONNECTION STATUS","x":0,"y":0,"w":640,"h":38,"z":1,"fontSize":20,"bg":"#ffea00","fg":"#111111","node":"","binding":"none","dataType":"STRING","buttonMode":"value","writeValue":"","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_title","type":"label","name":"Screen_Title","text":"LMC216C OPC UA Test","x":32,"y":48,"w":530,"h":40,"z":2,"fontSize":28,"bg":"#d8eeee","fg":"#111111","node":"","binding":"none","dataType":"STRING","buttonMode":"value","writeValue":"","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_bool_label","type":"label","name":"Bool_Label","text":"Test BOOL","x":30,"y":110,"w":330,"h":52,"z":3,"fontSize":21,"bg":"#d8eeee","fg":"#111111","node":"","binding":"none","dataType":"STRING","buttonMode":"value","writeValue":"","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_bool_btn","type":"button","name":"Test_Bool_Toggle","text":"TOGGLE","x":362,"y":106,"w":200,"h":52,"z":4,"fontSize":18,"bg":"#9fcfcf","fg":"#111111","node":"ns=2;s=Application.GVL_OPC.G_xTestBool","binding":"readwrite","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":1,"units":"","navTarget":""},{"id":"obj_set_label","type":"label","name":"Setpoint_Label","text":"Test Setpoint","x":32,"y":166,"w":330,"h":52,"z":5,"fontSize":21,"bg":"#d8eeee","fg":"#111111","node":"","binding":"none","dataType":"STRING","buttonMode":"value","writeValue":"","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_setpoint","type":"input","name":"Test_Setpoint","text":"0.0","x":362,"y":166,"w":200,"h":52,"z":6,"fontSize":20,"bg":"#ffffff","fg":"#111111","node":"ns=2;s=Application.GVL_OPC.G_lrTestSetpoint","binding":"readwrite","dataType":"LREAL","buttonMode":"value","writeValue":"0.0","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_value_label","type":"label","name":"TestValue_Label","text":"PLC Test Value","x":32,"y":226,"w":330,"h":52,"z":7,"fontSize":21,"bg":"#d8eeee","fg":"#111111","node":"","binding":"none","dataType":"STRING","buttonMode":"value","writeValue":"","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_value","type":"num","name":"PLC_Test_Value","text":"0.0","x":362,"y":226,"w":200,"h":52,"z":8,"fontSize":23,"bg":"#9fcfcf","fg":"#111111","node":"ns=2;s=Application.GVL_OPC.G_lrTestValue","binding":"read","dataType":"LREAL","buttonMode":"value","writeValue":"","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_counter_label","type":"label","name":"Counter_Label","text":"PLC Counter","x":32,"y":286,"w":330,"h":52,"z":9,"fontSize":21,"bg":"#d8eeee","fg":"#111111","node":"","binding":"none","dataType":"STRING","buttonMode":"value","writeValue":"","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_counter","type":"num","name":"PLC_Counter","text":"0","x":362,"y":286,"w":200,"h":52,"z":10,"fontSize":23,"bg":"#9fcfcf","fg":"#111111","node":"ns=2;s=Application.GVL_OPC.G_diTestCounter","binding":"read","dataType":"DINT","buttonMode":"value","writeValue":"","min":0,"max":100000,"units":"","navTarget":""},{"id":"obj_bottom_test","type":"nav","name":"Bottom_Test","text":"TEST","x":0,"y":424,"w":110,"h":56,"z":11,"fontSize":18,"bg":"#9fcfcf","fg":"#111111","node":"","binding":"none","dataType":"BOOL","buttonMode":"value","writeValue":"","min":0,"max":1,"units":"","navTarget":"Main"},{"id":"obj_bottom_status","type":"nav","name":"Bottom_Status","text":"STATUS","x":110,"y":424,"w":110,"h":56,"z":12,"fontSize":18,"bg":"#9fcfcf","fg":"#111111","node":"","binding":"none","dataType":"BOOL","buttonMode":"value","writeValue":"","min":0,"max":1,"units":"","navTarget":"Main"},{"id":"obj_tpvd85s7","type":"label","name":"label_14","text":"Orbit Motion Systems","x":470,"y":50,"w":160,"h":40,"z":12,"fontSize":20,"bg":"#d8eeee","fg":"#111111","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_bottom_data","type":"nav","name":"Bottom_Data","text":"DATA","x":220,"y":424,"w":110,"h":56,"z":13,"fontSize":18,"bg":"#9fcfcf","fg":"#111111","node":"","binding":"none","dataType":"BOOL","buttonMode":"value","writeValue":"","min":0,"max":1,"units":"","navTarget":"Main"},{"id":"obj_aene8gjd","type":"nav","name":"nav_15","text":"NEXT","x":520,"y":420,"w":110,"h":50,"z":14,"fontSize":20,"bg":"#9fcfcf","fg":"#111111","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":"Secondary"}]},{"name":"Secondary","objects":[{"id":"obj_t2c2ej64","type":"label","name":"label_3","text":"Label","x":10,"y":60,"w":160,"h":40,"z":13,"fontSize":20,"bg":"#d8eeee","fg":"#111111","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_7wtkqyxq","type":"button","name":"button_4","text":"START","x":500,"y":60,"w":120,"h":55,"z":14,"fontSize":20,"bg":"#9fcfcf","fg":"#111111","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_7d2l35qh","type":"num","name":"num_5","text":"0.0","x":120,"y":60,"w":140,"h":50,"z":15,"fontSize":20,"bg":"#9fcfcf","fg":"#111111","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_yigsxedl","type":"nav","name":"nav_1","text":"NEXT","x":520,"y":420,"w":110,"h":50,"z":16,"fontSize":20,"bg":"#9fcfcf","fg":"#111111","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":"Main"},{"id":"obj_g2pvizap","type":"input","name":"input_6","text":"0.0","x":120,"y":120,"w":140,"h":50,"z":16,"fontSize":20,"bg":"#ffffff","fg":"#111111","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_g99amj8w","type":"alarm","name":"alarm_2","text":"NO ACTIVE ALARMS","x":0,"y":0,"w":640,"h":50,"z":17,"fontSize":20,"bg":"#ffea00","fg":"#111111","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""}]}],"currentScreen":"Secondary"};
+    {"name":"MyVirtualHMI","canvas":{"width":1280,"height":720},"opc":{"endpoint":"opc.tcp://10.200.200.45:4840","policy":"Basic256Sha256","mode":"SignAndEncrypt","username":"admin"},"screens":[{"name":"Main","objects":[{"id":"obj_w0uq5nqs","type":"status","name":"status_1","text":"READY","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","x":50,"y":50,"w":150,"h":42,"z":11,"fontSize":20,"bg":"#2e9d58","fg":"#ffffff","node":"ns=2;s=Application.GVL_OPC.G_xTestBool","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""}]}],"currentScreen":"Main"};
 
 
 let currentScreen =
@@ -826,6 +834,45 @@ function updateDisplay() {
                         ? "#33cc55"
                         : "#777777";
 
+
+                    return;
+                }
+
+                // ------------------------------------------
+                // STATUS INDICATOR
+                // ------------------------------------------
+
+                if (
+                    obj.type ===
+                    "status"
+                ) {
+
+                    if (obj.dataType === "BOOL") {
+
+                        if (value) {
+
+                            element.innerText =
+                                obj.trueText ||
+                                "RUNNING";
+
+                            element.style.background =
+                                obj.trueColor ||
+                                "#2e9d58";
+
+                        } else {
+
+                            element.innerText =
+                                obj.falseText ||
+                                "STOPPED";
+
+                            element.style.background =
+                                obj.falseColor ||
+                                "#c83b3b";
+                        }
+
+                        element.style.color =
+                            "#ffffff";
+                    }
 
                     return;
                 }

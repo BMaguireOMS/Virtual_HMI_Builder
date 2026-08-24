@@ -49,6 +49,14 @@ const defaults = {
         fg: "#ffffff"
     },
 
+    status: {
+    text: "READY",
+    w: 150,
+    h: 42,
+    bg: "#2e9d58",
+    fg: "#ffffff"
+    },
+
     toggle: {
         text: "TOGGLE",
         w: 110,
@@ -111,8 +119,17 @@ const defaults = {
         h: 180,
         bg: "#ffffff",
         fg: "#17212b"
-    }
+    },
+
+    line: {
+    text: "",
+    w: 300,
+    h: 2,
+    bg: "#aab4bd",
+    fg: "#aab4bd"
+    },
 };
+
 /*
 const defaults = {
 
@@ -474,6 +491,12 @@ function createObject(type) {
 
         text: d.text,
 
+        trueText: "RUNNING",
+        falseText: "STOPPED",
+
+        trueColor: "#2e9d58",
+        falseColor: "#c83b3b",
+
         x: 50,
         y: 50,
 
@@ -653,7 +676,49 @@ function createObjectElement(obj) {
                 "0 8px";
 
             break;
+        
+        // ----------------------------------------------------
+        // LINE
+        // ----------------------------------------------------
 
+        case "line":
+
+            element.style.border =
+                "none";
+
+            element.style.borderRadius =
+                "0";
+
+            element.style.padding =
+                "0";
+
+            element.style.minHeight =
+                "1px";
+
+            break;
+
+        // ----------------------------------------------------
+        // STATUS INDICATOR
+        // ----------------------------------------------------
+
+        case "status":
+
+            element.style.border =
+                "1px solid rgba(0,0,0,0.20)";
+
+            element.style.borderRadius =
+                "4px";
+
+            element.style.fontWeight =
+                "700";
+
+            element.style.letterSpacing =
+                "0.5px";
+
+            element.style.boxShadow =
+                "inset 0 1px 0 rgba(255,255,255,0.20)";
+
+            break;
 
         // ----------------------------------------------------
         // PUSH BUTTON
@@ -1151,6 +1216,18 @@ function updatePropertyPanel() {
 
     $("fg").value =
         obj.fg;
+    
+    $("trueText").value =
+    obj.trueText || "RUNNING";
+
+    $("falseText").value =
+        obj.falseText || "STOPPED";
+
+    $("trueColor").value =
+        obj.trueColor || "#2e9d58";
+
+    $("falseColor").value =
+        obj.falseColor || "#c83b3b";
 
     $("node").value =
         obj.node;
@@ -1223,6 +1300,18 @@ function applyProperties(renderAfter = true) {
 
     obj.fg =
         $("fg").value;
+    
+    obj.trueText =
+    $("trueText").value;
+
+    obj.falseText =
+        $("falseText").value;
+
+    obj.trueColor =
+        $("trueColor").value;
+
+    obj.falseColor =
+        $("falseColor").value;
 
     obj.node =
         $("node").value.trim();
@@ -3372,6 +3461,45 @@ function updateDisplay() {
                     return;
                 }
 
+                // ------------------------------------------
+                // STATUS INDICATOR
+                // ------------------------------------------
+
+                if (
+                    obj.type ===
+                    "status"
+                ) {
+
+                    if (obj.dataType === "BOOL") {
+
+                        if (value) {
+
+                            element.innerText =
+                                obj.trueText ||
+                                "RUNNING";
+
+                            element.style.background =
+                                obj.trueColor ||
+                                "#2e9d58";
+
+                        } else {
+
+                            element.innerText =
+                                obj.falseText ||
+                                "STOPPED";
+
+                            element.style.background =
+                                obj.falseColor ||
+                                "#c83b3b";
+                        }
+
+                        element.style.color =
+                            "#ffffff";
+                    }
+
+                    return;
+                }
+
 
                 // ------------------------------------------
                 // EVERYTHING ELSE
@@ -3930,10 +4058,22 @@ async function runHMI() {
 
         // Start runtime_server.py
 
+        const opcPassword =
+            $("password").value;
+
+
         const startResponse = await fetch(
             "/api/start-runtime",
             {
-                method: "POST"
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    password: opcPassword
+                })
             }
         );
 

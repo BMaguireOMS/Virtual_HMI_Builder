@@ -13,6 +13,113 @@ const defaults = {
         text: "Label",
         w: 160,
         h: 40,
+        bg: "#eef2f4",
+        fg: "#1b252d"
+    },
+
+    button: {
+        text: "START",
+        w: 120,
+        h: 55,
+        bg: "#d6dde2",
+        fg: "#17212b"
+    },
+
+    num: {
+        text: "0.0",
+        w: 140,
+        h: 50,
+        bg: "#ffffff",
+        fg: "#17212b"
+    },
+
+    input: {
+        text: "0.0",
+        w: 140,
+        h: 50,
+        bg: "#ffffff",
+        fg: "#17212b"
+    },
+
+    lamp: {
+        text: "",
+        w: 50,
+        h: 50,
+        bg: "#7f8b94",
+        fg: "#ffffff"
+    },
+
+    toggle: {
+        text: "TOGGLE",
+        w: 110,
+        h: 50,
+        bg: "#d6dde2",
+        fg: "#17212b"
+    },
+
+    gauge: {
+        text: "0",
+        w: 120,
+        h: 120,
+        bg: "#ffffff",
+        fg: "#17212b"
+    },
+
+    bar: {
+        text: "0 %",
+        w: 200,
+        h: 45,
+        bg: "#d9dfe3",
+        fg: "#17212b"
+    },
+
+    alarm: {
+        text: "NO ACTIVE ALARMS",
+        w: 380,
+        h: 42,
+        bg: "#f2c94c",
+        fg: "#17212b"
+    },
+
+    trend: {
+        text: "TREND",
+        w: 320,
+        h: 180,
+        bg: "#202a32",
+        fg: "#54c77a"
+    },
+
+    image: {
+        text: "IMAGE",
+        w: 180,
+        h: 120,
+        bg: "#ffffff",
+        fg: "#59656e"
+    },
+
+    nav: {
+        text: "NEXT",
+        w: 110,
+        h: 50,
+        bg: "#344957",
+        fg: "#ffffff"
+    },
+
+    panel: {
+        text: "",
+        w: 300,
+        h: 180,
+        bg: "#ffffff",
+        fg: "#17212b"
+    }
+};
+/*
+const defaults = {
+
+    label: {
+        text: "Label",
+        w: 160,
+        h: 40,
         bg: "#d8eeee",
         fg: "#111111"
     },
@@ -105,6 +212,7 @@ const defaults = {
         fg: "#111111"
     }
 };
+*/
 
 
 // ============================================================
@@ -325,7 +433,33 @@ function getSelectedObjects() {
 
 function createObject(type) {
 
-    const d = defaults[type];
+    let d = defaults[type];
+
+
+    // Fallback for Panel / Rectangle
+    if (type === "panel" && !d) {
+
+        d = {
+            text: "",
+            w: 300,
+            h: 180,
+            bg: "#ffffff",
+            fg: "#17212b"
+        };
+    }
+
+
+    // Prevent crashes from unknown object types
+    if (!d) {
+
+        console.error(
+            "Unknown object type:",
+            type
+        );
+
+        return;
+    }
+
 
     const obj = {
 
@@ -371,15 +505,20 @@ function createObject(type) {
         navTarget: ""
     };
 
+
     saveHistory();
+
 
     currentScreen().objects.push(obj);
 
-    // Make the newly created object the only selected object
+
+    // Make newly created object the only selected object
     selectedIds.clear();
+
     selectedIds.add(obj.id);
 
     selectedId = obj.id;
+
 
     render();
 }
@@ -420,6 +559,432 @@ function render() {
 // CREATE VISUAL OBJECT
 // ============================================================
 
+function createObjectElement(obj) {
+
+    const element =
+        document.createElement("div");
+
+
+    element.classList.add(
+        "obj",
+        obj.type
+    );
+
+
+    element.dataset.id =
+        obj.id;
+
+
+    // ========================================================
+    // MULTI-SELECTION
+    // ========================================================
+
+    if (selectedIds.has(obj.id)) {
+
+        element.classList.add(
+            "multi-selected"
+        );
+    }
+
+
+    // ========================================================
+    // POSITION / SIZE
+    // ========================================================
+
+    element.style.left =
+        obj.x + "px";
+
+    element.style.top =
+        obj.y + "px";
+
+    element.style.width =
+        obj.w + "px";
+
+    element.style.height =
+        obj.h + "px";
+
+    element.style.zIndex =
+        obj.z;
+
+
+    // ========================================================
+    // BASIC APPEARANCE
+    // ========================================================
+
+    element.style.background =
+        obj.bg;
+
+    element.style.color =
+        obj.fg;
+
+    element.style.fontSize =
+        obj.fontSize + "px";
+
+    element.style.boxSizing =
+        "border-box";
+
+
+    // ========================================================
+    // MODERN INDUSTRIAL OBJECT STYLING
+    // ========================================================
+
+    switch (obj.type) {
+
+
+        // ----------------------------------------------------
+        // LABEL
+        // ----------------------------------------------------
+
+        case "label":
+
+            element.style.border =
+                "none";
+
+            element.style.borderRadius =
+                "0";
+
+            element.style.fontWeight =
+                "600";
+
+            element.style.justifyContent =
+                "flex-start";
+
+            element.style.padding =
+                "0 8px";
+
+            break;
+
+
+        // ----------------------------------------------------
+        // PUSH BUTTON
+        // ----------------------------------------------------
+
+        case "button":
+
+            element.style.border =
+                "1px solid #9aa7b1";
+
+            element.style.borderRadius =
+                "4px";
+
+            element.style.fontWeight =
+                "600";
+
+            element.style.boxShadow =
+                "0 1px 2px rgba(0,0,0,0.12)";
+
+            element.style.cursor =
+                "pointer";
+
+            break;
+
+
+        // ----------------------------------------------------
+        // NUMERIC DISPLAY
+        // ----------------------------------------------------
+
+        case "num":
+
+            element.style.border =
+                "1px solid #aab4bd";
+
+            element.style.borderRadius =
+                "3px";
+
+            element.style.fontWeight =
+                "600";
+
+            element.style.fontVariantNumeric =
+                "tabular-nums";
+
+            element.style.boxShadow =
+                "inset 0 1px 2px rgba(0,0,0,0.06)";
+
+            break;
+
+
+        // ----------------------------------------------------
+        // NUMERIC INPUT
+        // ----------------------------------------------------
+
+        case "input":
+
+            element.style.border =
+                "1px solid #8795a1";
+
+            element.style.borderRadius =
+                "3px";
+
+            element.style.fontWeight =
+                "600";
+
+            element.style.fontVariantNumeric =
+                "tabular-nums";
+
+            element.style.boxShadow =
+                "inset 0 1px 2px rgba(0,0,0,0.08)";
+
+            break;
+
+
+        // ----------------------------------------------------
+        // INDICATOR LAMP
+        // ----------------------------------------------------
+
+        case "lamp":
+
+            element.style.border =
+                "3px solid #5f6b73";
+
+            element.style.borderRadius =
+                "50%";
+
+            element.style.boxShadow =
+                "inset 0 0 5px rgba(0,0,0,0.35)";
+
+            break;
+
+
+        // ----------------------------------------------------
+        // TOGGLE
+        // ----------------------------------------------------
+
+        case "toggle":
+
+            element.style.border =
+                "1px solid #8d9aa5";
+
+            element.style.borderRadius =
+                "18px";
+
+            element.style.fontWeight =
+                "600";
+
+            element.style.cursor =
+                "pointer";
+
+            break;
+
+
+        // ----------------------------------------------------
+        // GAUGE
+        // ----------------------------------------------------
+
+        case "gauge":
+
+            element.style.border =
+                "6px solid #667580";
+
+            element.style.borderRadius =
+                "50%";
+
+            element.style.fontWeight =
+                "700";
+
+            element.style.fontVariantNumeric =
+                "tabular-nums";
+
+            element.style.boxShadow =
+                "inset 0 0 0 3px #dce2e6";
+
+            break;
+
+
+        // ----------------------------------------------------
+        // BAR
+        // ----------------------------------------------------
+
+        case "bar":
+
+            element.style.border =
+                "1px solid #9ca8b1";
+
+            element.style.borderRadius =
+                "3px";
+
+            element.style.fontWeight =
+                "600";
+
+            element.style.overflow =
+                "hidden";
+
+            break;
+
+
+        // ----------------------------------------------------
+        // ALARM
+        // ----------------------------------------------------
+
+        case "alarm":
+
+            element.style.border =
+                "1px solid #c69d21";
+
+            element.style.borderRadius =
+                "3px";
+
+            element.style.fontWeight =
+                "700";
+
+            element.style.justifyContent =
+                "flex-start";
+
+            element.style.padding =
+                "0 12px";
+
+            break;
+
+
+        // ----------------------------------------------------
+        // TREND
+        // ----------------------------------------------------
+
+        case "trend":
+
+            element.style.border =
+                "1px solid #56636c";
+
+            element.style.borderRadius =
+                "3px";
+
+            element.style.fontFamily =
+                "Consolas, monospace";
+
+            break;
+
+
+        // ----------------------------------------------------
+        // IMAGE
+        // ----------------------------------------------------
+
+        case "image":
+
+            element.style.border =
+                "1px solid #b7c0c7";
+
+            element.style.borderRadius =
+                "3px";
+
+            break;
+
+        // ----------------------------------------------------
+        // PANEL
+        // ----------------------------------------------------
+
+        case "panel":
+
+            element.style.border =
+                "1px solid #c5cdd3";
+
+            element.style.borderRadius =
+                "4px";
+
+            element.style.boxShadow =
+                "0 1px 2px rgba(0,0,0,0.05)";
+
+            element.style.justifyContent =
+                "flex-start";
+
+            element.style.alignItems =
+                "flex-start";
+
+            element.style.padding =
+                "8px";
+
+            break;
+        // ----------------------------------------------------
+        // NAVIGATION BUTTON
+        // ----------------------------------------------------
+
+        case "nav":
+
+            element.style.border =
+                "1px solid #24343f";
+
+            element.style.borderRadius =
+                "3px";
+
+            element.style.fontWeight =
+                "600";
+
+            element.style.cursor =
+                "pointer";
+
+            element.style.boxShadow =
+                "0 1px 2px rgba(0,0,0,0.15)";
+
+            break;
+    }
+
+
+    // ========================================================
+    // TEXT
+    // ========================================================
+
+    element.innerText =
+        obj.text +
+        (
+            obj.units
+                ? " " + obj.units
+                : ""
+        );
+
+
+    // ========================================================
+    // RESIZE HANDLE
+    // ========================================================
+
+    const resizeHandle =
+        document.createElement("div");
+
+    resizeHandle.className =
+        "handle";
+
+
+    element.appendChild(
+        resizeHandle
+    );
+
+
+    // ========================================================
+    // DRAG
+    // ========================================================
+
+    element.addEventListener(
+        "pointerdown",
+        event =>
+            beginDrag(
+                event,
+                obj,
+                element
+            )
+    );
+
+
+    // ========================================================
+    // RESIZE
+    // ========================================================
+
+    resizeHandle.addEventListener(
+        "pointerdown",
+        event =>
+            beginResize(
+                event,
+                obj,
+                element
+            )
+    );
+
+
+    // ========================================================
+    // ADD TO CANVAS
+    // ========================================================
+
+    canvas.appendChild(
+        element
+    );
+}
+/*
 function createObjectElement(obj) {
 
     const element =
@@ -514,6 +1079,7 @@ function createObjectElement(obj) {
         element
     );
 }
+*/
 
 
 // ============================================================
@@ -2017,6 +2583,14 @@ body {
     align-items: center;
 
     justify-content: center;
+
+    box-sizing: border-box;
+}
+
+.panel {
+    border: 1px solid #c5cdd3;
+
+    border-radius: 4px;
 
     box-sizing: border-box;
 }

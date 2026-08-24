@@ -512,6 +512,13 @@ function createObject(type) {
         trueColor: "#2e9d58",
         falseColor: "#c83b3b",
 
+        animateColor: false,
+        animateVisibility: false,
+        animateBlink: false,
+
+        blinkSpeed: 0.8,
+        blinkOpacity: 0.2,
+
         x: 50,
         y: 50,
 
@@ -1243,6 +1250,21 @@ function updatePropertyPanel() {
 
     $("falseColor").value =
         obj.falseColor || "#c83b3b";
+    
+    $("animateColor").checked =
+        obj.animateColor || false;
+
+    $("animateVisibility").checked =
+        obj.animateVisibility || false;
+
+    $("animateVisibility").checked =
+        obj.animateVisibility || false;
+    
+    $("blinkSpeed").value =
+        obj.blinkSpeed ?? 0.8;
+
+    $("blinkOpacity").value =
+        obj.blinkOpacity ?? 0.2;
 
     $("node").value =
         obj.node;
@@ -1317,7 +1339,7 @@ function applyProperties(renderAfter = true) {
         $("fg").value;
     
     obj.trueText =
-    $("trueText").value;
+        $("trueText").value;
 
     obj.falseText =
         $("falseText").value;
@@ -1327,6 +1349,21 @@ function applyProperties(renderAfter = true) {
 
     obj.falseColor =
         $("falseColor").value;
+
+    obj.animateColor =
+        $("animateColor").checked;
+
+    obj.animateVisibility =
+        $("animateVisibility").checked;
+    
+    obj.animateBlink =
+        $("animateBlink").checked;
+
+    obj.blinkSpeed =
+        Number($("blinkSpeed").value);
+
+    obj.blinkOpacity =
+        Number($("blinkOpacity").value);
 
     obj.node =
         $("node").value.trim();
@@ -2718,6 +2755,29 @@ body {
     box-sizing: border-box;
 }
 
+@keyframes hmiBlink {
+
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: var(--blink-opacity, 0.2);
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.blink-active {
+
+    animation:
+        hmiBlink
+        var(--blink-speed, 0.8s)
+        infinite;
+}
+
 .panel {
     border: 1px solid #c5cdd3;
 
@@ -3542,6 +3602,75 @@ function updateDisplay() {
                     return;
                 }
 
+                // ------------------------------------------
+                // GENERIC BOOL COLOR ANIMATION
+                // ------------------------------------------
+
+                if (
+                    obj.animateColor === true &&
+                    obj.dataType === "BOOL"
+                ) {
+
+                    element.style.background =
+                        value
+                            ? (obj.trueColor || "#2e9d58")
+                            : (obj.falseColor || "#c83b3b");
+                }
+
+                // ------------------------------------------
+                // GENERIC BOOL VISIBILITY ANIMATION
+                // ------------------------------------------
+
+                    if (
+                        obj.animateVisibility === true &&
+                        obj.dataType === "BOOL"
+                    ) {
+
+                        element.style.display =
+                            value
+                                ? "flex"
+                                : "none";
+                    }
+
+                                if (
+                    obj.animateBlink === true &&
+                    obj.dataType === "BOOL"
+                    ) {
+
+                    if (value) {
+
+                        const speed =
+                            obj.blinkSpeed ?? 0.8;
+
+                        const opacity =
+                            obj.blinkOpacity ?? 0.2;
+
+
+                        element.style.setProperty(
+                            "--blink-speed",
+                            speed + "s"
+                        );
+
+                        element.style.setProperty(
+                            "--blink-opacity",
+                            opacity
+                        );
+
+
+                        element.classList.add(
+                            "blink-active"
+                        );
+
+                    } else {
+
+                        element.classList.remove(
+                            "blink-active"
+                        );
+
+                        element.style.opacity =
+                            "1";
+                    }
+                }
 
                 // ------------------------------------------
                 // EVERYTHING ELSE

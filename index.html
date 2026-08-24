@@ -379,47 +379,163 @@
             id="fg"
             type="color">
         </label>
-        
+
       </div>
 
       <!-- ============================================ -->
-      <!-- STATUS INDICATOR PROPERTIES -->
-      <!-- ============================================ -->
+<!-- STATUS INDICATOR PROPERTIES -->
+<!-- ============================================ -->
 
-      <label>
-          True Text
-          <input
-              id="trueText"
-              type="text"
-              value="RUNNING">
-      </label>
+<label>
+    True Text
+    <input
+        id="trueText"
+        type="text"
+        value="RUNNING">
+</label>
 
-        <label>
-            False Text
-            <input
-                id="falseText"
-                type="text"
-                value="STOPPED">
-        </label>
+<label>
+    False Text
+    <input
+        id="falseText"
+        type="text"
+        value="STOPPED">
+</label>
 
-        <label>
-            True Color
-            <input
-                id="trueColor"
-                type="color"
-                value="#2e9d58">
-        </label>
+<label>
+    True Color
+    <input
+        id="trueColor"
+        type="color"
+        value="#2e9d58">
+</label>
 
-        <label>
-            False Color
-            <input
-                id="falseColor"
-                type="color"
-                value="#c83b3b">
-        </label>
+<label>
+    False Color
+    <input
+        id="falseColor"
+        type="color"
+        value="#c83b3b">
+</label>
 
 
-      <hr>
+<div style="
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    justify-content:flex-start;
+    gap:7px;
+    margin:8px 0;
+    width:100%;
+">
+    <input
+        id="animateColor"
+        type="checkbox"
+        style="
+            width:14px;
+            height:14px;
+            margin:0;
+            padding:0;
+            flex:0 0 14px;
+        ">
+
+    <span style="
+        font-size:12px;
+        color:#adb7c0;
+        white-space:nowrap;
+    ">
+        Animate Background From BOOL
+    </span>
+</div>
+
+
+<div style="
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    justify-content:flex-start;
+    gap:7px;
+    margin:8px 0;
+    width:100%;
+">
+    <input
+        id="animateVisibility"
+        type="checkbox"
+        style="
+            width:14px;
+            height:14px;
+            margin:0;
+            padding:0;
+            flex:0 0 14px;
+        ">
+
+    <span style="
+        font-size:12px;
+        color:#adb7c0;
+        white-space:nowrap;
+    ">
+        Show When BOOL Is True
+    </span>
+</div>
+
+
+<div style="
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    justify-content:flex-start;
+    gap:7px;
+    margin:8px 0;
+    width:100%;
+">
+    <input
+        id="animateBlink"
+        type="checkbox"
+        style="
+            width:14px;
+            height:14px;
+            margin:0;
+            padding:0;
+            flex:0 0 14px;
+        ">
+
+    <span style="
+        font-size:12px;
+        color:#adb7c0;
+        white-space:nowrap;
+    ">
+        Blink When BOOL Is True
+    </span>
+</div>
+
+
+<label>
+    Blink Speed (seconds)
+
+    <input
+        id="blinkSpeed"
+        type="number"
+        min="0.1"
+        max="10"
+        step="0.1"
+        value="0.8">
+</label>
+
+
+<label>
+    Blink Minimum Opacity
+
+    <input
+        id="blinkOpacity"
+        type="number"
+        min="0"
+        max="1"
+        step="0.1"
+        value="0.2">
+</label>
+
+
+<hr>
 
 
       <label>

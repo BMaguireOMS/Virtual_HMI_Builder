@@ -9,14 +9,12 @@ from http.server import (
     SimpleHTTPRequestHandler
 )
 
-
 # ============================================================
 # SERVER SETTINGS
 # ============================================================
 
 HOST = "0.0.0.0"
 PORT = 8080
-
 
 # ============================================================
 # RUNTIME PATHS
@@ -34,13 +32,11 @@ RUNTIME_HTML = os.path.join(
     "index.html"
 )
 
-
 # ============================================================
 # RUNTIME PROCESS
 # ============================================================
 
 runtime_process = None
-
 
 # ============================================================
 # BUILDER REQUEST HANDLER
@@ -74,7 +70,6 @@ class BuilderHandler(SimpleHTTPRequestHandler):
 
         self.wfile.write(body)
 
-
     # ========================================================
     # POST REQUESTS
     # ========================================================
@@ -99,7 +94,6 @@ class BuilderHandler(SimpleHTTPRequestHandler):
             content_length
         )
 
-
         # ====================================================
         # SAVE RUNTIME
         # ====================================================
@@ -118,12 +112,10 @@ class BuilderHandler(SimpleHTTPRequestHandler):
                     "runtimeHTML"
                 ]
 
-
                 os.makedirs(
                     RUNTIME_FOLDER,
                     exist_ok=True
                 )
-
 
                 # --------------------------------------------
                 # SAVE project.json
@@ -141,7 +133,6 @@ class BuilderHandler(SimpleHTTPRequestHandler):
                         indent=2
                     )
 
-
                 # --------------------------------------------
                 # SAVE runtime/index.html
                 # --------------------------------------------
@@ -156,7 +147,6 @@ class BuilderHandler(SimpleHTTPRequestHandler):
                         runtime_html
                     )
 
-
                 print(
                     "Runtime project saved."
                 )
@@ -165,13 +155,11 @@ class BuilderHandler(SimpleHTTPRequestHandler):
                     "Runtime index.html generated."
                 )
 
-
                 self.send_json(
                     {
                         "success": True
                     }
                 )
-
 
             except Exception as error:
 
@@ -189,9 +177,7 @@ class BuilderHandler(SimpleHTTPRequestHandler):
                     500
                 )
 
-
             return
-
 
         # ====================================================
         # START RUNTIME
@@ -205,7 +191,6 @@ class BuilderHandler(SimpleHTTPRequestHandler):
                     "Start runtime request received."
                 )
 
-
                 # --------------------------------------------
                 # READ PASSWORD SENT FROM THE BUILDER
                 # --------------------------------------------
@@ -218,12 +203,10 @@ class BuilderHandler(SimpleHTTPRequestHandler):
                         raw_body.decode("utf-8")
                     )
 
-
                 opc_password = request_data.get(
                     "password",
                     ""
                 )
-
 
                 # Create environment for runtime_server.py
                 runtime_env = os.environ.copy()
@@ -231,7 +214,6 @@ class BuilderHandler(SimpleHTTPRequestHandler):
                 runtime_env[
                     "HMI_OPC_PASSWORD"
                 ] = opc_password
-
 
                 # --------------------------------------------
                 # START RUNTIME PROCESS
@@ -246,7 +228,6 @@ class BuilderHandler(SimpleHTTPRequestHandler):
                         "Starting runtime_server.py..."
                     )
 
-
                     runtime_process = subprocess.Popen(
                         [
                             sys.executable,
@@ -255,12 +236,10 @@ class BuilderHandler(SimpleHTTPRequestHandler):
                         env=runtime_env
                     )
 
-
                     print(
                         f"Runtime started with PID: "
                         f"{runtime_process.pid}"
                     )
-
 
                 else:
 
@@ -268,13 +247,11 @@ class BuilderHandler(SimpleHTTPRequestHandler):
                         "Runtime is already running."
                     )
 
-
                 self.send_json(
                     {
                         "success": True
                     }
                 )
-
 
             except Exception as error:
 
@@ -292,9 +269,7 @@ class BuilderHandler(SimpleHTTPRequestHandler):
                     500
                 )
 
-
             return
-
 
         # ====================================================
         # STOP RUNTIME
@@ -307,7 +282,6 @@ class BuilderHandler(SimpleHTTPRequestHandler):
                 print(
                     "Stop runtime request received."
                 )
-
 
                 if (
                     runtime_process is not None
@@ -324,16 +298,13 @@ class BuilderHandler(SimpleHTTPRequestHandler):
                         timeout=5
                     )
 
-
                 runtime_process = None
-
 
                 self.send_json(
                     {
                         "success": True
                     }
                 )
-
 
             except subprocess.TimeoutExpired:
 
@@ -347,13 +318,11 @@ class BuilderHandler(SimpleHTTPRequestHandler):
 
                     runtime_process = None
 
-
                 self.send_json(
                     {
                         "success": True
                     }
                 )
-
 
             except Exception as error:
 
@@ -371,9 +340,7 @@ class BuilderHandler(SimpleHTTPRequestHandler):
                     500
                 )
 
-
             return
-
 
         # ====================================================
         # UNKNOWN API ENDPOINT
@@ -387,7 +354,6 @@ class BuilderHandler(SimpleHTTPRequestHandler):
             404
         )
 
-
 # ============================================================
 # START BUILDER SERVER
 # ============================================================
@@ -399,7 +365,6 @@ def start_server():
         BuilderHandler
     )
 
-
     print("")
     print("======================================")
     print("VIRTUAL HMI BUILDER")
@@ -410,7 +375,6 @@ def start_server():
 
 
     server.serve_forever()
-
 
 # ============================================================
 # MAIN

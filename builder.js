@@ -1320,6 +1320,10 @@ function beginDrag(
     element
 ) {
 
+    if (event.shiftKey) {
+    return;
+    }
+
     if (
         event.target.classList.contains(
             "handle"
@@ -1494,7 +1498,10 @@ wrap.addEventListener(
     event => {
 
         // Do not start selection when clicking an HMI object
-        if (event.target.closest(".obj")) {
+        if (
+            event.target.closest(".obj") &&
+            !event.shiftKey
+        ) {
             return;
         }
 

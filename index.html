@@ -52,6 +52,12 @@
             ■ STOP HMI
         </button>
 
+        <button
+            id="communicationsBtn"
+            type="button">
+            Communications
+        </button>
+
     </div>
   </header>
 
@@ -797,7 +803,7 @@
 
     </div>
 
-
+<!--
     <h3>
       OPC UA
     </h3>
@@ -871,7 +877,7 @@
     </label>
 
   </aside>
-
+-->
 
   <footer class="statusbar">
 
@@ -913,6 +919,148 @@
 
 </div>
 
+<div
+    id="communicationsModal"
+    class="modal"
+    hidden>
+
+    <div class="communications-box">
+
+        <div class="modalhead">
+
+            <strong>
+                Communications
+            </strong>
+
+            <button
+                id="closeCommunications"
+                type="button">
+                Close
+            </button>
+
+        </div>
+
+
+        <div style="
+            padding:16px;
+            overflow:auto;
+        ">
+
+            <label>
+                Protocol
+
+                <select id="commProtocol">
+
+                    <option value="opcua">
+                        OPC UA
+                    </option>
+
+                    <option value="modbusTcp">
+                        Modbus TCP
+                    </option>
+
+                    <option value="ethernetIp">
+                        EtherNet/IP
+                    </option>
+
+                </select>
+            </label>
+
+
+            <label>
+                Connection Name
+
+                <input
+                    id="commName"
+                    value="Main PLC">
+            </label>
+
+
+            <label>
+                Endpoint / Address
+
+                <input
+                    id="commEndpoint"
+                    placeholder="opc.tcp://10.200.200.45:4840">
+            </label>
+
+
+            <label>
+                Security Policy
+
+                <select id="commPolicy">
+
+                    <option>
+                        Basic256Sha256
+                    </option>
+
+                    <option>
+                        None
+                    </option>
+
+                </select>
+            </label>
+
+
+            <label>
+                Security Mode
+
+                <select id="commMode">
+
+                    <option value="SignAndEncrypt">
+                        Sign & Encrypt
+                    </option>
+
+                    <option value="Sign">
+                        Sign
+                    </option>
+
+                    <option value="None">
+                        None
+                    </option>
+
+                </select>
+            </label>
+
+
+            <label>
+                Username
+
+                <input
+                    id="commUsername">
+            </label>
+
+
+<label>
+    Password
+
+    <input
+        id="commPassword"
+        type="password">
+</label>
+
+
+<div style="
+    display:flex;
+    justify-content:flex-end;
+    gap:8px;
+    margin-top:16px;
+">
+
+    <button
+        id="applyCommunications"
+        type="button">
+        Apply
+    </button>
+
+</div>
+
+
+</div>
+
+</div>
+
+</div>
 
 <script src="builder.js"></script>
 

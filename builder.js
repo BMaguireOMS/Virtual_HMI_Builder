@@ -1592,6 +1592,90 @@ $("dropdownOptionsList").addEventListener(
     }
 );
 
+$("communicationsBtn").addEventListener(
+    "click",
+    () => {
+
+        // ================================================
+        // LOAD CURRENT COMMUNICATION SETTINGS
+        // ================================================
+
+        $("commProtocol").value =
+            "opcua";
+
+
+        $("commName").value =
+            "Main PLC";
+
+
+        $("commEndpoint").value =
+            project.opc?.endpoint || "";
+
+
+        $("commPolicy").value =
+            project.opc?.policy ||
+            "Basic256Sha256";
+
+
+        $("commMode").value =
+            project.opc?.mode ||
+            "SignAndEncrypt";
+
+
+        $("commUsername").value =
+            project.opc?.username || "";
+
+
+        $("commPassword").value =
+            window.hmiOpcPassword || "";
+
+
+        // ================================================
+        // OPEN WINDOW
+        // ================================================
+
+        $("communicationsModal").hidden =
+            false;
+    }
+);
+
+$("closeCommunications").addEventListener(
+    "click",
+    () => {
+
+        $("communicationsModal").hidden =
+            true;
+    }
+);
+
+$("applyCommunications").addEventListener(
+    "click",
+    () => {
+
+        project.opc.endpoint =
+            $("commEndpoint").value.trim();
+
+        project.opc.policy =
+            $("commPolicy").value;
+
+        project.opc.mode =
+            $("commMode").value;
+
+        project.opc.username =
+            $("commUsername").value.trim();
+
+
+        // Keep password in memory only.
+        // Do not save it into project.json.
+        window.hmiOpcPassword =
+            $("commPassword").value;
+
+
+        $("communicationsModal").hidden =
+            true;
+    }
+);
+
 $("dropdownMode").addEventListener(
     "change",
     () => {
@@ -2712,6 +2796,7 @@ function updateProjectSettings() {
             $("ch").value
         );
 
+
     // Update the visual HMI canvas size
     canvas.style.width =
         project.canvas.width + "px";
@@ -2719,17 +2804,9 @@ function updateProjectSettings() {
     canvas.style.height =
         project.canvas.height + "px";
 
-    project.opc.endpoint =
-        $("endpoint").value;
 
-    project.opc.policy =
-        $("policy").value;
-
-    project.opc.mode =
-        $("mode").value;
-
-    project.opc.username =
-        $("user").value;
+    // OPC UA communication settings are now
+    // handled by the Communications popup.
 }
 
 // ============================================================
@@ -2821,7 +2898,7 @@ async function openProject(event) {
 
     $("ch").value =
         project.canvas.height;
-
+/*
     $("endpoint").value =
         project.opc.endpoint;
 
@@ -2833,7 +2910,7 @@ async function openProject(event) {
 
     $("user").value =
         project.opc.username || "";
-
+*/
     render();
 }
 
@@ -4599,7 +4676,7 @@ async function runHMI() {
         // Start runtime_server.py
 
         const opcPassword =
-            $("password").value;
+            window.hmiOpcPassword || "";
 
         const startResponse = await fetch(
             "/api/start-runtime",

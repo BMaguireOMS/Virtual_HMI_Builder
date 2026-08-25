@@ -52,11 +52,11 @@ const defaults = {
     },
 
     status: {
-    text: "READY",
-    w: 150,
-    h: 42,
-    bg: "#2e9d58",
-    fg: "#ffffff"
+        text: "READY",
+        w: 150,
+        h: 42,
+        bg: "#2e9d58",
+        fg: "#ffffff"
     },
 
     toggle: {
@@ -124,115 +124,13 @@ const defaults = {
     },
 
     line: {
-    text: "",
-    w: 300,
-    h: 2,
-    bg: "#aab4bd",
-    fg: "#aab4bd"
-    },
-};
-
-/*
-const defaults = {
-
-    label: {
-        text: "Label",
-        w: 160,
-        h: 40,
-        bg: "#d8eeee",
-        fg: "#111111"
-    },
-
-    button: {
-        text: "START",
-        w: 120,
-        h: 55,
-        bg: "#9fcfcf",
-        fg: "#111111"
-    },
-
-    num: {
-        text: "0.0",
-        w: 140,
-        h: 50,
-        bg: "#9fcfcf",
-        fg: "#111111"
-    },
-
-    input: {
-        text: "0.0",
-        w: 140,
-        h: 50,
-        bg: "#ffffff",
-        fg: "#111111"
-    },
-
-    lamp: {
         text: "",
-        w: 50,
-        h: 50,
-        bg: "#777777",
-        fg: "#111111"
+        w: 300,
+        h: 2,
+        bg: "#aab4bd",
+        fg: "#aab4bd"
     },
-
-    toggle: {
-        text: "TOGGLE",
-        w: 110,
-        h: 50,
-        bg: "#9fcfcf",
-        fg: "#111111"
-    },
-
-    gauge: {
-        text: "0",
-        w: 120,
-        h: 120,
-        bg: "#ffffff",
-        fg: "#111111"
-    },
-
-    bar: {
-        text: "0 %",
-        w: 200,
-        h: 45,
-        bg: "#dddddd",
-        fg: "#111111"
-    },
-
-    alarm: {
-        text: "NO ACTIVE ALARMS",
-        w: 380,
-        h: 42,
-        bg: "#ffea00",
-        fg: "#111111"
-    },
-
-    trend: {
-        text: "TREND",
-        w: 320,
-        h: 180,
-        bg: "#111111",
-        fg: "#66ff66"
-    },
-
-    image: {
-        text: "IMAGE",
-        w: 180,
-        h: 120,
-        bg: "#eeeeee",
-        fg: "#333333"
-    },
-
-    nav: {
-        text: "NEXT",
-        w: 110,
-        h: 50,
-        bg: "#9fcfcf",
-        fg: "#111111"
-    }
 };
-*/
-
 
 // ============================================================
 // PROJECT
@@ -282,7 +180,6 @@ let undoStack = [];
 let redoStack = [];
 
 const MAX_HISTORY = 50;
-
 
 // ============================================================
 // HELPERS
@@ -568,7 +465,6 @@ function createObject(type) {
     render();
 }
 
-
 // ============================================================
 // RENDER
 // ============================================================
@@ -598,7 +494,6 @@ function render() {
 
     selectObject(selectedId);
 }
-
 
 // ============================================================
 // CREATE VISUAL OBJECT
@@ -651,7 +546,6 @@ function createObjectElement(obj) {
     element.style.zIndex =
         obj.z;
 
-
     // ========================================================
     // BASIC APPEARANCE
     // ========================================================
@@ -668,13 +562,11 @@ function createObjectElement(obj) {
     element.style.boxSizing =
         "border-box";
 
-
     // ========================================================
     // MODERN INDUSTRIAL OBJECT STYLING
     // ========================================================
 
     switch (obj.type) {
-
 
         // ----------------------------------------------------
         // LABEL
@@ -765,7 +657,6 @@ function createObjectElement(obj) {
 
             break;
 
-
         // ----------------------------------------------------
         // NUMERIC DISPLAY
         // ----------------------------------------------------
@@ -788,7 +679,6 @@ function createObjectElement(obj) {
                 "inset 0 1px 2px rgba(0,0,0,0.06)";
 
             break;
-
 
         // ----------------------------------------------------
         // NUMERIC INPUT
@@ -813,7 +703,6 @@ function createObjectElement(obj) {
 
             break;
 
-
         // ----------------------------------------------------
         // INDICATOR LAMP
         // ----------------------------------------------------
@@ -830,7 +719,6 @@ function createObjectElement(obj) {
                 "inset 0 0 5px rgba(0,0,0,0.35)";
 
             break;
-
 
         // ----------------------------------------------------
         // TOGGLE
@@ -851,7 +739,6 @@ function createObjectElement(obj) {
                 "pointer";
 
             break;
-
 
         // ----------------------------------------------------
         // GAUGE
@@ -876,7 +763,6 @@ function createObjectElement(obj) {
 
             break;
 
-
         // ----------------------------------------------------
         // BAR
         // ----------------------------------------------------
@@ -896,7 +782,6 @@ function createObjectElement(obj) {
                 "hidden";
 
             break;
-
 
         // ----------------------------------------------------
         // ALARM
@@ -921,7 +806,6 @@ function createObjectElement(obj) {
 
             break;
 
-
         // ----------------------------------------------------
         // TREND
         // ----------------------------------------------------
@@ -938,7 +822,6 @@ function createObjectElement(obj) {
                 "Consolas, monospace";
 
             break;
-
 
         // ----------------------------------------------------
         // IMAGE
@@ -979,6 +862,7 @@ function createObjectElement(obj) {
                 "8px";
 
             break;
+
         // ----------------------------------------------------
         // NAVIGATION BUTTON
         // ----------------------------------------------------
@@ -1003,7 +887,6 @@ function createObjectElement(obj) {
             break;
     }
 
-
     // ========================================================
     // TEXT
     // ========================================================
@@ -1015,7 +898,6 @@ function createObjectElement(obj) {
                 ? " " + obj.units
                 : ""
         );
-
 
     // ========================================================
     // RESIZE HANDLE
@@ -1032,7 +914,6 @@ function createObjectElement(obj) {
         resizeHandle
     );
 
-
     // ========================================================
     // DRAG
     // ========================================================
@@ -1046,7 +927,6 @@ function createObjectElement(obj) {
                 element
             )
     );
-
 
     // ========================================================
     // RESIZE
@@ -1062,7 +942,6 @@ function createObjectElement(obj) {
             )
     );
 
-
     // ========================================================
     // ADD TO CANVAS
     // ========================================================
@@ -1071,103 +950,6 @@ function createObjectElement(obj) {
         element
     );
 }
-/*
-function createObjectElement(obj) {
-
-    const element =
-        document.createElement("div");
-
-
-    element.classList.add(
-        "obj",
-        obj.type
-    );
-
-
-    element.dataset.id =
-        obj.id;
-
-    if (selectedIds.has(obj.id)) {
-
-    element.classList.add(
-        "multi-selected"
-    );
-    }
-
-    element.style.left =
-        obj.x + "px";
-
-    element.style.top =
-        obj.y + "px";
-
-    element.style.width =
-        obj.w + "px";
-
-    element.style.height =
-        obj.h + "px";
-
-    element.style.zIndex =
-        obj.z;
-
-    element.style.background =
-        obj.bg;
-
-    element.style.color =
-        obj.fg;
-
-    element.style.fontSize =
-        obj.fontSize + "px";
-
-
-    element.innerText =
-        obj.text +
-        (
-            obj.units
-                ? " " + obj.units
-                : ""
-        );
-
-
-    const resizeHandle =
-        document.createElement("div");
-
-    resizeHandle.className =
-        "handle";
-
-
-    element.appendChild(
-        resizeHandle
-    );
-
-
-    element.addEventListener(
-        "pointerdown",
-        event =>
-            beginDrag(
-                event,
-                obj,
-                element
-            )
-    );
-
-
-    resizeHandle.addEventListener(
-        "pointerdown",
-        event =>
-            beginResize(
-                event,
-                obj,
-                element
-            )
-    );
-
-
-    canvas.appendChild(
-        element
-    );
-}
-*/
-
 
 // ============================================================
 // SELECTION
@@ -1195,7 +977,6 @@ function selectObject(id) {
 
     updateSelectionVisuals();
 }
-
 
 // ============================================================
 // PROPERTY PANEL
@@ -1294,7 +1075,6 @@ function updatePropertyPanel() {
         obj.navTarget || "";
 }
 
-
 // ============================================================
 // APPLY PROPERTIES
 // ============================================================
@@ -1392,7 +1172,6 @@ function applyProperties(renderAfter = true) {
     obj.navTarget =
         $("navTarget").value;
 
-
     if (renderAfter) {
         render();
     }
@@ -1425,7 +1204,6 @@ $("w").addEventListener(
         }
     }
 );
-
 
 $("h").addEventListener(
     "input",
@@ -1478,7 +1256,6 @@ $("x").addEventListener(
         }
     }
 );
-
 
 $("y").addEventListener(
     "input",
@@ -1580,7 +1357,6 @@ function beginDrag(
         }
     }
 
-
     // ========================================================
     // START DRAG
     // ========================================================
@@ -1602,7 +1378,6 @@ function beginDrag(
     const startPositions =
         new Map();
 
-
     selectedObjects.forEach(
         selectedObj => {
 
@@ -1616,7 +1391,6 @@ function beginDrag(
 
         }
     );
-
 
     // ========================================================
     // MOVE
@@ -1643,7 +1417,6 @@ function beginDrag(
                 Math.round(deltaY / 10) * 10;
         }
 
-
         selectedObjects.forEach(
             selectedObj => {
 
@@ -1660,7 +1433,6 @@ function beginDrag(
                 selectedObj.y =
                     original.y +
                     deltaY;
-
 
                 // Find this object's visual element
                 const selectedElement =
@@ -1681,11 +1453,9 @@ function beginDrag(
             }
         );
 
-
         // Update X/Y fields for the primary selected object
         updatePropertyPanel();
     }
-
 
     // ========================================================
     // STOP DRAG
@@ -1704,12 +1474,10 @@ function beginDrag(
         );
     }
 
-
     window.addEventListener(
         "pointermove",
         move
     );
-
 
     window.addEventListener(
         "pointerup",
@@ -1741,7 +1509,6 @@ wrap.addEventListener(
 
         isSelecting = true;
 
-
         // Clear old selection unless Ctrl is held
         if (!event.ctrlKey) {
 
@@ -1750,7 +1517,6 @@ wrap.addEventListener(
 
             updateSelectionVisuals();
         }
-
 
         selectionBox =
             document.createElement("div");
@@ -1770,7 +1536,6 @@ wrap.addEventListener(
 
         selectionBox.style.height =
             "0px";
-
 
         canvas.appendChild(
             selectionBox
@@ -1816,7 +1581,6 @@ document.addEventListener(
             return;
         }
 
-
         const rect =
             canvas.getBoundingClientRect();
 
@@ -1826,7 +1590,6 @@ document.addEventListener(
 
         const currentY =
             event.clientY - rect.top;
-
 
         const left =
             Math.min(
@@ -1851,7 +1614,6 @@ document.addEventListener(
                 currentY -
                 selectionStartY
             );
-
 
         selectionBox.style.left =
             left + "px";
@@ -1878,7 +1640,6 @@ document.addEventListener(
             return;
         }
 
-
         const boxRect =
             selectionBox.getBoundingClientRect();
 
@@ -1891,22 +1652,18 @@ document.addEventListener(
                         `[data-id="${obj.id}"]`
                     );
 
-
                 if (!element) {
                     return;
                 }
 
-
                 const objectRect =
                     element.getBoundingClientRect();
-
 
                 const inside =
                     objectRect.left >= boxRect.left &&
                     objectRect.right <= boxRect.right &&
                     objectRect.top >= boxRect.top &&
                     objectRect.bottom <= boxRect.bottom;
-
 
                 if (inside) {
 
@@ -1920,7 +1677,6 @@ document.addEventListener(
             }
         );
 
-
         selectionBox.remove();
 
         selectionBox = null;
@@ -1931,7 +1687,6 @@ document.addEventListener(
         updateSelectionVisuals();
     }
 );
-
 
 // ============================================================
 // RESIZE
@@ -1960,7 +1715,6 @@ function beginResize(
     const originalHeight =
         obj.h;
 
-
     function move(event) {
 
         obj.w =
@@ -1973,7 +1727,6 @@ function beginResize(
                 )
             );
 
-
         obj.h =
             Math.max(
                 24,
@@ -1984,17 +1737,14 @@ function beginResize(
                 )
             );
 
-
         element.style.width =
             obj.w + "px";
 
         element.style.height =
             obj.h + "px";
 
-
         updatePropertyPanel();
     }
-
 
     function stop() {
 
@@ -2009,7 +1759,6 @@ function beginResize(
         );
     }
 
-
     window.addEventListener(
         "pointermove",
         move
@@ -2020,7 +1769,6 @@ function beginResize(
         stop
     );
 }
-
 
 // ============================================================
 // DELETE
@@ -2066,7 +1814,6 @@ function deleteSelected() {
     render();
 }
 
-
 // ============================================================
 // DUPLICATE
 // ============================================================
@@ -2081,12 +1828,10 @@ function duplicateSelected() {
         return;
     }
 
-
     const copy =
         JSON.parse(
             JSON.stringify(obj)
         );
-
 
     copy.id =
         uid();
@@ -2103,15 +1848,12 @@ function duplicateSelected() {
     copy.z =
         ++zCounter;
 
-
     currentScreen()
         .objects
         .push(copy);
 
-
     selectedId =
         copy.id;
-
 
     render();
 }
@@ -2143,7 +1885,6 @@ function copySelected() {
         return;
     }
 
-
     clipboardObjects =
         objects.map(
             obj =>
@@ -2157,7 +1898,6 @@ function copySelected() {
         clipboardObjects.length
     );
 }
-
 
 function pasteObject() {
 
@@ -2174,12 +1914,9 @@ function pasteObject() {
         return;
     }
 
-
     saveHistory();
 
-
     const newObjects = [];
-
 
     clipboardObjects.forEach(
         original => {
@@ -2189,15 +1926,12 @@ function pasteObject() {
                     JSON.stringify(original)
                 );
 
-
             copy.id =
                 uid();
-
 
             copy.name =
                 copy.name +
                 "_copy";
-
 
             copy.x +=
                 20;
@@ -2205,25 +1939,20 @@ function pasteObject() {
             copy.y +=
                 20;
 
-
             copy.z =
                 ++zCounter;
-
 
             currentScreen()
                 .objects
                 .push(copy);
-
 
             newObjects.push(copy);
 
         }
     );
 
-
     // Select all newly pasted objects
     selectedIds.clear();
-
 
     newObjects.forEach(
         obj => {
@@ -2235,14 +1964,12 @@ function pasteObject() {
         }
     );
 
-
     selectedId =
         newObjects.length
             ? newObjects[
                 newObjects.length - 1
             ].id
             : null;
-
 
     // Move clipboard forward so repeated Ctrl+V
     // continues offsetting the group
@@ -2254,10 +1981,8 @@ function pasteObject() {
                 )
         );
 
-
     render();
 }
-
 
 function cutSelected() {
 
@@ -2284,7 +2009,6 @@ function renderScreenList() {
     $("navTarget").innerHTML =
         '<option value="">None</option>';
 
-
     project.screens.forEach(
         screen => {
 
@@ -2293,13 +2017,11 @@ function renderScreenList() {
                     "option"
                 );
 
-
             option.value =
                 screen.name;
 
             option.innerText =
                 screen.name;
-
 
             if (
                 screen.name ===
@@ -2310,25 +2032,21 @@ function renderScreenList() {
                     true;
             }
 
-
             $("screenSel")
                 .appendChild(
                     option
                 );
-
 
             const navOption =
                 document.createElement(
                     "option"
                 );
 
-
             navOption.value =
                 screen.name;
 
             navOption.innerText =
                 screen.name;
-
 
             $("navTarget")
                 .appendChild(
@@ -2338,7 +2056,6 @@ function renderScreenList() {
         }
     );
 }
-
 
 // ============================================================
 // ADD SCREEN
@@ -2353,11 +2070,9 @@ function addScreen() {
             (project.screens.length + 1)
         );
 
-
     if (!name) {
         return;
     }
-
 
     project.screens.push({
 
@@ -2367,17 +2082,13 @@ function addScreen() {
 
     });
 
-
     project.currentScreen =
         name;
 
-
     selectedId = null;
-
 
     render();
 }
-
 
 // ============================================================
 // RENAME SCREEN
@@ -2395,19 +2106,15 @@ function renameScreen() {
             screen.name
         );
 
-
     if (!newName) {
         return;
     }
 
-
     const oldName =
         screen.name;
 
-
     screen.name =
         newName;
-
 
     project.screens.forEach(
         s => {
@@ -2430,14 +2137,11 @@ function renameScreen() {
         }
     );
 
-
     project.currentScreen =
         newName;
 
-
     render();
 }
-
 
 // ============================================================
 // PROJECT SETTINGS
@@ -2448,18 +2152,15 @@ function updateProjectSettings() {
     project.name =
         $("projectName").value;
 
-
     project.canvas.width =
         Number(
             $("cw").value
         );
 
-
     project.canvas.height =
         Number(
             $("ch").value
         );
-
 
     // Update the visual HMI canvas size
     canvas.style.width =
@@ -2468,23 +2169,18 @@ function updateProjectSettings() {
     canvas.style.height =
         project.canvas.height + "px";
 
-
     project.opc.endpoint =
         $("endpoint").value;
-
 
     project.opc.policy =
         $("policy").value;
 
-
     project.opc.mode =
         $("mode").value;
-
 
     project.opc.username =
         $("user").value;
 }
-
 
 // ============================================================
 // LIVE CANVAS SIZE UPDATE
@@ -2500,7 +2196,6 @@ $("cw").addEventListener(
     }
 );
 
-
 $("ch").addEventListener(
     "input",
     () => {
@@ -2510,7 +2205,6 @@ $("ch").addEventListener(
         render();
     }
 );
-
 
 // ============================================================
 // SAVE PROJECT
@@ -2523,9 +2217,7 @@ function saveProject() {
         applyProperties(false);
     }
 
-
     updateProjectSettings();
-
 
     const data =
         JSON.stringify(
@@ -2533,7 +2225,6 @@ function saveProject() {
             null,
             2
         );
-
 
     downloadBlob(
         new Blob(
@@ -2549,7 +2240,6 @@ function saveProject() {
     );
 }
 
-
 // ============================================================
 // OPEN PROJECT
 // ============================================================
@@ -2564,50 +2254,38 @@ async function openProject(event) {
         return;
     }
 
-
     const text =
         await file.text();
-
 
     project =
         JSON.parse(text);
 
-
     selectedId =
         null;
-
 
     $("projectName").value =
         project.name;
 
-
     $("cw").value =
         project.canvas.width;
-
 
     $("ch").value =
         project.canvas.height;
 
-
     $("endpoint").value =
         project.opc.endpoint;
-
 
     $("policy").value =
         project.opc.policy;
 
-
     $("mode").value =
         project.opc.mode;
-
 
     $("user").value =
         project.opc.username || "";
 
-
     render();
 }
-
 
 // ============================================================
 // NEW PROJECT
@@ -2623,7 +2301,6 @@ function newProject() {
 
         return;
     }
-
 
     project = {
 
@@ -2664,7 +2341,6 @@ function newProject() {
             "Main"
     };
 
-
     selectedId =
         null;
 
@@ -2700,7 +2376,6 @@ function saveHistory() {
     redoStack = [];
 }
 
-
 function undo() {
 
     if (undoStack.length === 0) {
@@ -2725,7 +2400,6 @@ function undo() {
 
     console.log("Undo");
 }
-
 
 function redo() {
 
@@ -2763,9 +2437,7 @@ function createRuntimeHTML() {
         applyProperties(false);
     }
 
-
     updateProjectSettings();
-
 
     const projectJSON =
         JSON.stringify(project)
@@ -2773,7 +2445,6 @@ function createRuntimeHTML() {
                 /</g,
                 "\\u003c"
             );
-
 
     return `<!DOCTYPE html>
 
@@ -2789,7 +2460,6 @@ function createRuntimeHTML() {
 
 <title>${project.name}</title>
 
-
 <style>
 
 body {
@@ -2804,7 +2474,6 @@ body {
         sans-serif;
 }
 
-
 #screen {
 
     position: relative;
@@ -2815,7 +2484,6 @@ body {
 
     overflow: hidden;
 }
-
 
 .runtime-object {
 
@@ -2861,7 +2529,6 @@ body {
     box-sizing: border-box;
 }
 
-
 .button,
 .nav,
 .toggle {
@@ -2874,7 +2541,6 @@ body {
     touch-action: none;
 }
 
-
 .button:active,
 .toggle:active {
 
@@ -2882,14 +2548,12 @@ body {
         2px inset #d8eeee;
 }
 
-
 .num,
 .input {
 
     border:
         1px solid #222;
 }
-
 
 .lamp {
 
@@ -2899,7 +2563,6 @@ body {
         2px solid #333;
 }
 
-
 .gauge {
 
     border-radius: 50%;
@@ -2908,7 +2571,6 @@ body {
         8px solid #34495e;
 }
 
-
 .alarm {
 
     border:
@@ -2916,7 +2578,6 @@ body {
 
     font-weight: bold;
 }
-
 
 .trend {
 
@@ -2928,11 +2589,9 @@ body {
 
 </head>
 
-
 <body>
 
 <div id="screen"></div>
-
 
 <script>
 
@@ -2943,12 +2602,10 @@ const project =
 let currentScreen =
     project.currentScreen;
 
-
 // Contains the newest values received
 // from the PLC.
 
 let latestValues = {};
-
 
 // ==========================================================
 // DRAW SCREEN
@@ -2963,32 +2620,26 @@ function renderScreen() {
                 currentScreen
         );
 
-
     const root =
         document.getElementById(
             "screen"
         );
 
-
     root.innerHTML =
         "";
-
 
     root.style.width =
         project.canvas.width +
         "px";
 
-
     root.style.height =
         project.canvas.height +
         "px";
-
 
     screen.objects.forEach(
         obj => {
 
             let element;
-
 
             if (
                 obj.type ===
@@ -3016,11 +2667,9 @@ function renderScreen() {
                     obj.text;
             }
 
-
             element.className =
                 "runtime-object " +
                 obj.type;
-
 
             element.style.left =
                 obj.x + "px";
@@ -3043,7 +2692,6 @@ function renderScreen() {
             element.style.fontSize =
                 obj.fontSize + "px";
 
-
             element.dataset.node =
                 obj.node;
 
@@ -3055,7 +2703,6 @@ function renderScreen() {
 
             element.dataset.objectId =
                 obj.id;
-
 
             // ==============================================
             // NAVIGATION BUTTON
@@ -3084,7 +2731,6 @@ function renderScreen() {
                     };
             }
 
-
             // ==============================================
             // BOOL / WRITE BUTTONS
             // ==============================================
@@ -3101,7 +2747,6 @@ function renderScreen() {
                     obj
                 );
             }
-
 
             // ==============================================
             // NUMERIC INPUT
@@ -3131,7 +2776,6 @@ function renderScreen() {
                                 );
                         }
 
-
                         else if (
                             obj.dataType ===
                             "REAL" ||
@@ -3145,7 +2789,6 @@ function renderScreen() {
                                 );
                         }
 
-
                         writePLCValue(
                             obj.node,
                             value,
@@ -3155,7 +2798,6 @@ function renderScreen() {
                 );
             }
 
-
             root.appendChild(
                 element
             );
@@ -3163,7 +2805,6 @@ function renderScreen() {
         }
     );
 }
-
 
 // ==========================================================
 // CONFIGURE BUTTON BEHAVIOR
@@ -3178,11 +2819,9 @@ function configureButton(
         return;
     }
 
-
     const mode =
         obj.buttonMode ||
         "toggle";
-
 
     // ------------------------------------------------------
     // TOGGLE
@@ -3204,7 +2843,6 @@ function configureButton(
                         ]
                     );
 
-
                 await writePLCValue(
                     obj.node,
                     !current,
@@ -3215,7 +2853,6 @@ function configureButton(
 
         return;
     }
-
 
     // ------------------------------------------------------
     // SET TRUE
@@ -3241,7 +2878,6 @@ function configureButton(
         return;
     }
 
-
     // ------------------------------------------------------
     // SET FALSE
     // ------------------------------------------------------
@@ -3266,7 +2902,6 @@ function configureButton(
         return;
     }
 
-
     // ------------------------------------------------------
     // MOMENTARY
     // ------------------------------------------------------
@@ -3288,7 +2923,6 @@ function configureButton(
                 );
             };
 
-
         const release =
             event => {
 
@@ -3301,24 +2935,20 @@ function configureButton(
                 );
             };
 
-
         element.addEventListener(
             "pointerdown",
             press
         );
-
 
         element.addEventListener(
             "pointerup",
             release
         );
 
-
         element.addEventListener(
             "pointercancel",
             release
         );
-
 
         element.addEventListener(
             "pointerleave",
@@ -3333,10 +2963,8 @@ function configureButton(
             }
         );
 
-
         return;
     }
-
 
     // ------------------------------------------------------
     // GENERIC WRITE VALUE
@@ -3362,7 +2990,6 @@ function configureButton(
                         "true";
             }
 
-
             else if (
                 obj.dataType ===
                 "DINT"
@@ -3371,7 +2998,6 @@ function configureButton(
                 value =
                     parseInt(value);
             }
-
 
             else if (
                 obj.dataType ===
@@ -3384,7 +3010,6 @@ function configureButton(
                     parseFloat(value);
             }
 
-
             writePLCValue(
                 obj.node,
                 value,
@@ -3393,7 +3018,6 @@ function configureButton(
         }
     );
 }
-
 
 // ==========================================================
 // WRITE VALUE TO PYTHON BACKEND
@@ -3408,7 +3032,6 @@ async function writePLCValue(
     if (!node) {
         return;
     }
-
 
     try {
 
@@ -3444,10 +3067,8 @@ async function writePLCValue(
                 }
             );
 
-
         const result =
             await response.json();
-
 
         if (
             !result.success
@@ -3470,7 +3091,6 @@ async function writePLCValue(
     }
 }
 
-
 // ==========================================================
 // GET TAG VALUES FROM PYTHON
 // ==========================================================
@@ -3483,7 +3103,6 @@ async function updateTags() {
             await fetch(
                 "/api/tags"
             );
-
 
         latestValues =
             await response.json();
@@ -3501,7 +3120,6 @@ async function updateTags() {
         );
     }
 }
-
 
 // ==========================================================
 // UPDATE DISPLAYED VALUES
@@ -3528,14 +3146,11 @@ function updateDisplay() {
                     return;
                 }
 
-
                 const value =
                     latestValues[node];
 
-
                 const objectId =
                     element.dataset.objectId;
-
 
                 const obj =
                     project.screens
@@ -3549,11 +3164,9 @@ function updateDisplay() {
                                 objectId
                         );
 
-
                 if (!obj) {
                     return;
                 }
-
 
                 // ------------------------------------------
                 // INPUT
@@ -3574,10 +3187,8 @@ function updateDisplay() {
                             value;
                     }
 
-
                     return;
                 }
-
 
                 // ------------------------------------------
                 // BUTTON
@@ -3615,10 +3226,8 @@ function updateDisplay() {
                         }
                     }
 
-
                     return;
                 }
-
 
                 // ------------------------------------------
                 // LAMP
@@ -3633,7 +3242,6 @@ function updateDisplay() {
                         value
                         ? "#33cc55"
                         : "#777777";
-
 
                     return;
                 }
@@ -3731,7 +3339,6 @@ function updateDisplay() {
                             opacity
                         );
 
-
                         element.classList.add(
                             "blink-active"
                         );
@@ -3754,7 +3361,6 @@ function updateDisplay() {
                 let displayValue =
                     value;
 
-
                 if (
                     obj.units
                 ) {
@@ -3764,14 +3370,12 @@ function updateDisplay() {
                         obj.units;
                 }
 
-
                 element.innerText =
                     displayValue;
 
             }
         );
 }
-
 
 // ==========================================================
 // START RUNTIME
@@ -3793,7 +3397,6 @@ setInterval(
 </html>`;
 }
 
-
 // ============================================================
 // PREVIEW
 // ============================================================
@@ -3802,7 +3405,6 @@ function previewRuntime() {
 
     const html =
         createRuntimeHTML();
-
 
     const blob =
         new Blob(
@@ -3813,21 +3415,17 @@ function previewRuntime() {
             }
         );
 
-
     const url =
         URL.createObjectURL(
             blob
         );
 
-
     $("previewFrame").src =
         url;
-
 
     $("previewModal").hidden =
         false;
 }
-
 
 // ============================================================
 // EXPORT
@@ -3840,13 +3438,10 @@ function exportRuntime() {
         applyProperties(false);
     }
 
-
     updateProjectSettings();
-
 
     const html =
         createRuntimeHTML();
-
 
     downloadBlob(
 
@@ -3860,7 +3455,6 @@ function exportRuntime() {
 
         "index.html"
     );
-
 
     downloadBlob(
 
@@ -3882,12 +3476,10 @@ function exportRuntime() {
         "project.json"
     );
 
-
     alert(
         "Runtime exported successfully."
     );
 }
-
 
 // ============================================================
 // DOWNLOAD
@@ -3903,12 +3495,10 @@ function downloadBlob(
             "a"
         );
 
-
     const url =
         URL.createObjectURL(
             blob
         );
-
 
     link.href =
         url;
@@ -3916,9 +3506,7 @@ function downloadBlob(
     link.download =
         filename;
 
-
     link.click();
-
 
     setTimeout(
         () =>
@@ -3928,7 +3516,6 @@ function downloadBlob(
         1000
     );
 }
-
 
 // ============================================================
 // EVENTS
@@ -3952,7 +3539,6 @@ document
         }
     );
 
-
 canvas.addEventListener(
     "pointerdown",
     event => {
@@ -3968,14 +3554,12 @@ canvas.addEventListener(
     }
 );
 
-
 canvas.addEventListener(
     "mousemove",
     event => {
 
         const rect =
             canvas.getBoundingClientRect();
-
 
         $("mouseStatus").innerText =
             "X: " +
@@ -3993,19 +3577,15 @@ canvas.addEventListener(
     }
 );
 
-
 $("apply").onclick =
     () =>
         applyProperties(true);
 
-
 $("delBtn").onclick =
     deleteSelected;
 
-
 $("dupBtn").onclick =
     duplicateSelected;
-
 
 $("frontBtn").onclick =
     () => {
@@ -4023,7 +3603,6 @@ $("frontBtn").onclick =
         render();
     };
 
-
 $("backBtn").onclick =
     () => {
 
@@ -4040,14 +3619,11 @@ $("backBtn").onclick =
         render();
     };
 
-
 $("addScreen").onclick =
     addScreen;
 
-
 $("renameScreen").onclick =
     renameScreen;
-
 
 $("screenSel").onchange =
     event => {
@@ -4061,7 +3637,6 @@ $("screenSel").onchange =
         render();
     };
 
-
 $("grid").onchange =
     () => {
 
@@ -4070,7 +3645,6 @@ $("grid").onchange =
             $("grid").checked
         );
     };
-
 
 $("zoom").onchange =
     () => {
@@ -4084,22 +3658,17 @@ $("zoom").onchange =
             "top left";
     };
 
-
 $("saveBtn").onclick =
     saveProject;
-
 
 $("openFile").onchange =
     openProject;
 
-
 $("newBtn").onclick =
     newProject;
 
-
 $("previewBtn").onclick =
     previewRuntime;
-
 
 $("closePreview").onclick =
     () => {
@@ -4108,10 +3677,8 @@ $("closePreview").onclick =
             true;
     };
 
-
 $("exportBtn").onclick =
     exportRuntime;
-
 
 // ============================================================
 // KEYBOARD SHORTCUTS
@@ -4133,7 +3700,6 @@ document.addEventListener(
                 active.tagName === "TEXTAREA" ||
                 active.tagName === "SELECT"
             );
-
 
         // DELETE
         if (
@@ -4168,7 +3734,6 @@ if (
     undo();
 }
 
-
         // CTRL + Y = REDO
         if (
             event.ctrlKey &&
@@ -4180,7 +3745,6 @@ if (
 
             redo();
         }
-
 
         // CTRL + SHIFT + Z = REDO
         if (
@@ -4207,7 +3771,6 @@ if (
             copySelected();
         }
 
-
         // CTRL + V
         if (
             event.ctrlKey &&
@@ -4220,7 +3783,6 @@ if (
             pasteObject();
         }
 
-
         // CTRL + X
         if (
             event.ctrlKey &&
@@ -4232,7 +3794,6 @@ if (
 
             cutSelected();
         }
-
 
         // CTRL + D
         if (
@@ -4248,7 +3809,6 @@ if (
 
     }
 );
-
 
 // ============================================================
 // RUN HMI DIRECTLY FROM BUILDER
@@ -4267,11 +3827,9 @@ async function runHMI() {
 
         updateProjectSettings();
 
-
         // Generate the actual runtime HTML
         const runtimeHTML =
             createRuntimeHTML();
-
 
         // Send BOTH project JSON and runtime HTML
         // to builder_server.py
@@ -4292,16 +3850,13 @@ async function runHMI() {
             }
         );
 
-
         const saveResult =
             await saveResponse.json();
-
 
         console.log(
             "Save runtime:",
             saveResult
         );
-
 
         if (!saveResult.success) {
 
@@ -4312,12 +3867,10 @@ async function runHMI() {
             return;
         }
 
-
         // Start runtime_server.py
 
         const opcPassword =
             $("password").value;
-
 
         const startResponse = await fetch(
             "/api/start-runtime",
@@ -4334,10 +3887,8 @@ async function runHMI() {
             }
         );
 
-
         const startResult =
             await startResponse.json();
-
 
         if (!startResult.success) {
 
@@ -4347,7 +3898,6 @@ async function runHMI() {
 
             return;
         }
-
 
         // Open actual runtime HMI
 
@@ -4377,7 +3927,6 @@ async function runHMI() {
         );
     }
 }
-
 
 // ============================================================
 // STOP HMI
@@ -4415,7 +3964,6 @@ async function stopHMI() {
     }
 }
 
-
 // ============================================================
 // BUTTON EVENTS
 // ============================================================
@@ -4425,7 +3973,6 @@ $("runBtn").onclick =
 
 $("stopBtn").onclick =
     stopHMI;
-
 
 // ============================================================
 // START BUILDER

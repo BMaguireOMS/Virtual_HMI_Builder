@@ -130,6 +130,14 @@ const defaults = {
         bg: "#aab4bd",
         fg: "#aab4bd"
     },
+
+    dropdown: {
+        text: "SELECT",
+        w: 180,
+        h: 44,
+        bg: "#ffffff",
+        fg: "#17212b"
+    },
 };
 
 // ============================================================
@@ -403,6 +411,15 @@ function createObject(type) {
 
         text: d.text,
 
+        dropdownMode: "navigation",
+
+        dropdownOptions: [
+            {
+                label: "Main",
+                value: "Main"
+            }
+        ],
+
         trueText: "RUNNING",
         falseText: "STOPPED",
 
@@ -501,8 +518,37 @@ function render() {
 
 function createObjectElement(obj) {
 
-    const element =
+    let element;
+
+
+    // ========================================================
+    // DROPDOWN
+    // ========================================================
+
+    if (obj.type === "dropdown") {
+
+    element =
         document.createElement("div");
+
+
+    const options =
+        obj.dropdownOptions || [];
+
+
+    const firstOption =
+        options.length > 0
+            ? options[0].label
+            : "SELECT";
+
+
+    element.innerText =
+        firstOption + "  ▼";
+
+} else {
+
+    element =
+        document.createElement("div");
+}
 
 
     element.classList.add(
@@ -891,6 +937,8 @@ function createObjectElement(obj) {
     // TEXT
     // ========================================================
 
+    if (obj.type !== "dropdown") {
+
     element.innerText =
         obj.text +
         (
@@ -898,6 +946,7 @@ function createObjectElement(obj) {
                 ? " " + obj.units
                 : ""
         );
+    }
 
     // ========================================================
     // RESIZE HANDLE
@@ -948,6 +997,76 @@ function createObjectElement(obj) {
 
     canvas.appendChild(
         element
+    );
+}
+
+function renderDropdownOptionsEditor() {
+
+    const obj =
+        getSelectedObject();
+
+
+    const list =
+        $("dropdownOptionsList");
+
+
+    list.innerHTML =
+        "";
+
+
+    if (
+        !obj ||
+        obj.type !== "dropdown"
+    ) {
+        return;
+    }
+
+
+    const options =
+        obj.dropdownOptions || [];
+
+
+    options.forEach(
+        (optionData, index) => {
+
+            const row =
+                document.createElement("div");
+
+
+            row.style.marginBottom =
+                "10px";
+
+
+            row.innerHTML = `
+                <label>
+                    Label
+                    <input
+                        class="dropdown-option-label"
+                        data-index="${index}"
+                        value="${optionData.label || ""}">
+                </label>
+
+                <label>
+                    Target / Value
+                    <input
+                        class="dropdown-option-value"
+                        data-index="${index}"
+                        value="${optionData.value || ""}">
+                </label>
+
+                <button
+                    type="button"
+                    class="remove-dropdown-option"
+                    data-index="${index}">
+                    Remove
+                </button>
+            `;
+
+
+            list.appendChild(
+                row
+            );
+        }
     );
 }
 
@@ -1073,6 +1192,12 @@ function updatePropertyPanel() {
 
     $("navTarget").value =
         obj.navTarget || "";
+    
+    $("dropdownMode").value =
+    obj.dropdownMode ||
+    "navigation";
+
+    renderDropdownOptionsEditor();
 }
 
 // ============================================================
@@ -1171,11 +1296,157 @@ function applyProperties(renderAfter = true) {
 
     obj.navTarget =
         $("navTarget").value;
+    
+    obj.dropdownMode =
+        $("dropdownMode").value;
 
     if (renderAfter) {
         render();
     }
 }
+
+$("addDropdownOption").addEventListener(
+    "click",
+    () => {
+
+        const obj =
+            getSelectedObject();
+
+
+        if (
+            !obj ||
+            obj.type !== "dropdown"
+        ) {
+            return;
+        }
+
+
+        if (!obj.dropdownOptions) {
+
+            obj.dropdownOptions =
+                [];
+        }
+
+
+        obj.dropdownOptions.push(
+            {
+                label: "New Option",
+                value: ""
+            }
+        );
+
+
+        renderDropdownOptionsEditor();
+
+    }
+);
+
+$("dropdownOptionsList").addEventListener(
+    "click",
+    event => {
+
+        if (
+            !event.target.classList.contains(
+                "remove-dropdown-option"
+            )
+        ) {
+            return;
+        }
+
+
+        const obj =
+            getSelectedObject();
+
+
+        if (
+            !obj ||
+            obj.type !== "dropdown"
+        ) {
+            return;
+        }
+
+
+        const index =
+            Number(
+                event.target.dataset.index
+            );
+
+
+        obj.dropdownOptions.splice(
+            index,
+            1
+        );
+
+
+        renderDropdownOptionsEditor();
+
+    }
+);
+
+$("dropdownOptionsList").addEventListener(
+    "input",
+    event => {
+
+        const obj =
+            getSelectedObject();
+
+
+        if (
+            !obj ||
+            obj.type !== "dropdown"
+        ) {
+            return;
+        }
+
+
+        const index =
+            Number(
+                event.target.dataset.index
+            );
+
+
+        if (
+            Number.isNaN(index) ||
+            !obj.dropdownOptions[index]
+        ) {
+            return;
+        }
+
+
+        // ----------------------------------
+        // OPTION LABEL
+        // ----------------------------------
+
+        if (
+            event.target.classList.contains(
+                "dropdown-option-label"
+            )
+        ) {
+
+            obj.dropdownOptions[index].label =
+                event.target.value;
+        }
+
+
+        // ----------------------------------
+        // OPTION VALUE / TARGET
+        // ----------------------------------
+
+        if (
+            event.target.classList.contains(
+                "dropdown-option-value"
+            )
+        ) {
+
+            obj.dropdownOptions[index].value =
+                event.target.value;
+        }
+
+
+        // Update the visual dropdown preview
+        render();
+    }
+);
 
 // ============================================================
 // LIVE OBJECT SIZE UPDATE
@@ -1497,7 +1768,7 @@ wrap.addEventListener(
     "pointerdown",
     event => {
 
-        // Do not start selection when clicking an HMI object
+        // Do not start selection when clicking an HMI object if shift is not held down
         if (
             event.target.closest(".obj") &&
             !event.shiftKey
@@ -2649,30 +2920,75 @@ function renderScreen() {
             let element;
 
             if (
-                obj.type ===
-                "input"
-            ) {
+    obj.type ===
+    "input"
+) {
 
-                element =
-                    document.createElement(
-                        "input"
-                    );
+    element =
+        document.createElement(
+            "input"
+        );
 
-                element.value =
-                    obj.text;
+    element.value =
+        obj.text;
 
-            }
+}
 
-            else {
+else if (
+    obj.type ===
+    "dropdown"
+) {
 
-                element =
-                    document.createElement(
-                        "div"
-                    );
+    element =
+        document.createElement(
+            "select"
+        );
 
-                element.innerText =
-                    obj.text;
-            }
+    const options =
+        obj.dropdownOptions || [];
+
+    options.forEach(
+        optionData => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                optionData.value;
+
+            option.innerText =
+                optionData.label;
+
+            element.appendChild(
+                option
+            );
+        }
+    );
+
+    // Navigation dropdown should show
+    // the screen we are currently on
+    if (
+        obj.dropdownMode ===
+        "navigation"
+    ) {
+
+        element.value =
+            currentScreen;
+    }
+}
+
+else {
+
+    element =
+        document.createElement(
+            "div"
+        );
+
+    element.innerText =
+        obj.text;
+}
 
             element.className =
                 "runtime-object " +
@@ -2736,6 +3052,119 @@ function renderScreen() {
                         }
 
                     };
+            }
+            
+            // ==============================================
+            // DROPDOWN
+            // ==============================================
+
+            if (
+                obj.type ===
+                "dropdown"
+            ) {
+
+                element.addEventListener(
+                    "change",
+                    () => {
+
+                        // ----------------------------------
+                        // NAVIGATION MODE
+                        // ----------------------------------
+
+                        if (
+                            obj.dropdownMode ===
+                            "navigation"
+                        ) {
+
+                            const targetScreen =
+                                element.value;
+                            
+                            console.log(
+                                "Dropdown target:",
+                                targetScreen
+                            );
+
+                            console.log(
+                                "Available screens:",
+                                project.screens.map(
+                                    screen => screen.name
+                                )
+                            );
+
+                            const exists =
+                                project.screens.some(
+                                    screen =>
+                                        screen.name ===
+                                        targetScreen
+                                );
+
+                            if (exists) {
+
+                                currentScreen =
+                                    targetScreen;
+
+                                renderScreen();
+
+                                updateDisplay();
+                            }
+
+                            return;
+                        }
+
+                    }
+                );
+            }
+
+            // ----------------------------------
+            // PLC WRITE MODE
+            // ----------------------------------
+
+            if (
+                obj.dropdownMode ===
+                "write"
+            ) {
+
+                let value =
+                    element.value;
+
+
+                if (
+                    obj.dataType ===
+                    "BOOL"
+                ) {
+
+                    value =
+                        String(value)
+                            .toLowerCase() ===
+                        "true";
+                }
+
+                else if (
+                    obj.dataType ===
+                    "DINT"
+                ) {
+
+                    value =
+                        parseInt(value);
+                }
+
+                else if (
+                    obj.dataType ===
+                    "REAL" ||
+                    obj.dataType ===
+                    "LREAL"
+                ) {
+
+                    value =
+                        parseFloat(value);
+                }
+
+
+                writePLCValue(
+                    obj.node,
+                    value,
+                    obj.dataType
+                );
             }
 
             // ==============================================
@@ -3359,6 +3788,27 @@ function updateDisplay() {
                         element.style.opacity =
                             "1";
                     }
+                }
+
+                // ------------------------------------------
+                // DROPDOWN
+                // ------------------------------------------
+
+                if (
+                    obj.type ===
+                    "dropdown"
+                ) {
+
+                    if (
+                        obj.dropdownMode ===
+                        "write"
+                    ) {
+
+                        element.value =
+                            String(value);
+                    }
+
+                    return;
                 }
 
                 // ------------------------------------------

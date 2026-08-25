@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+<title>Glenmark_Modern_HMI_Demo</title>
+
+<style>
+
+body {
+
+    margin: 0;
+
+    background: #222;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+}
+
+#screen {
+
+    position: relative;
+
+    margin: auto;
+
+    background: #d8eeee;
+
+    overflow: hidden;
+}
+
+.runtime-object {
+
+    position: absolute;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    box-sizing: border-box;
+}
+
+@keyframes hmiBlink {
+
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: var(--blink-opacity, 0.2);
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.blink-active {
+
+    animation:
+        hmiBlink
+        var(--blink-speed, 0.8s)
+        infinite;
+}
+
+.panel {
+    border: 1px solid #c5cdd3;
+
+    border-radius: 4px;
+
+    box-sizing: border-box;
+}
+
+.button,
+.nav,
+.toggle {
+
+    border:
+        2px outset #d8eeee;
+
+    cursor: pointer;
+
+    touch-action: none;
+}
+
+.button:active,
+.toggle:active {
+
+    border:
+        2px inset #d8eeee;
+}
+
+.num,
+.input {
+
+    border:
+        1px solid #222;
+}
+
+.lamp {
+
+    border-radius: 50%;
+
+    border:
+        2px solid #333;
+}
+
+.gauge {
+
+    border-radius: 50%;
+
+    border:
+        8px solid #34495e;
+}
+
+.alarm {
+
+    border:
+        1px solid black;
+
+    font-weight: bold;
+}
+
+.trend {
+
+    border:
+        1px solid #555;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="screen"></div>
+
+<script>
+
+const project =
+    {"name":"Glenmark_Modern_HMI_Demo","canvas":{"width":1280,"height":720},"opc":{"endpoint":"opc.tcp://10.200.200.45:4840","policy":"Basic256Sha256","mode":"SignAndEncrypt","username":"admin"},"screens":[{"name":"Main","objects":[{"id":"obj_demo_0001","type":"panel","name":"bg","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":0,"y":0,"w":1280,"h":720,"z":1,"fontSize":18,"bg":"#eef1f3","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0002","type":"panel","name":"header","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":0,"y":0,"w":1280,"h":64,"z":2,"fontSize":18,"bg":"#263746","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0004","type":"panel","name":"footer","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":0,"y":640,"w":1280,"h":80,"z":2,"fontSize":18,"bg":"#263746","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0012","type":"panel","name":"statusCard","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":24,"y":118,"w":360,"h":220,"z":2,"fontSize":18,"bg":"#ffffff","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0013","type":"panel","name":"flowCard","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":414,"y":118,"w":448,"h":220,"z":2,"fontSize":18,"bg":"#ffffff","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0014","type":"panel","name":"prodCard","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":892,"y":118,"w":364,"h":220,"z":2,"fontSize":18,"bg":"#ffffff","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0042","type":"panel","name":"controlsCard","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":24,"y":364,"w":516,"h":250,"z":2,"fontSize":18,"bg":"#ffffff","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0050","type":"panel","name":"readyCard","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":566,"y":364,"w":690,"h":250,"z":2,"fontSize":18,"bg":"#ffffff","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0003","type":"label","name":"title","text":"GLENMARK PACKAGING SYSTEM","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":28,"y":14,"w":430,"h":36,"z":3,"fontSize":24,"bg":"#263746","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0010","type":"label","name":"pageTitle","text":"MACHINE OVERVIEW","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":466,"y":17,"w":270,"h":30,"z":3,"fontSize":16,"bg":"#263746","fg":"#d8e0e6","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0015","type":"label","name":"statusHdr","text":"MACHINE STATUS","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":44,"y":132,"w":220,"h":28,"z":3,"fontSize":14,"bg":"#ffffff","fg":"#6b7780","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0017","type":"label","name":"modeLbl","text":"Mode","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":44,"y":240,"w":100,"h":28,"z":3,"fontSize":14,"bg":"#ffffff","fg":"#6b7780","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0018","type":"label","name":"modeVal","text":"AUTOMATIC","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":182,"y":240,"w":150,"h":28,"z":3,"fontSize":17,"bg":"#ffffff","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0019","type":"label","name":"recipeLbl","text":"Recipe","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":44,"y":278,"w":100,"h":28,"z":3,"fontSize":14,"bg":"#ffffff","fg":"#6b7780","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0020","type":"label","name":"recipeVal","text":"PRODUCT A","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":182,"y":278,"w":150,"h":28,"z":3,"fontSize":17,"bg":"#ffffff","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0021","type":"label","name":"flowHdr","text":"PROCESS FLOW","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":434,"y":132,"w":220,"h":28,"z":3,"fontSize":14,"bg":"#ffffff","fg":"#6b7780","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0022","type":"label","name":"prodHdr","text":"PRODUCTION","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":912,"y":132,"w":220,"h":28,"z":3,"fontSize":14,"bg":"#ffffff","fg":"#6b7780","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0023","type":"panel","name":"FEEDER_box","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":438,"y":170,"w":88,"h":88,"z":3,"fontSize":18,"bg":"#f7f9fa","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0026","type":"panel","name":"CONVEYOR_box","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":540,"y":170,"w":88,"h":88,"z":3,"fontSize":18,"bg":"#f7f9fa","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0029","type":"panel","name":"PROCESS_box","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":642,"y":170,"w":88,"h":88,"z":3,"fontSize":18,"bg":"#f7f9fa","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0032","type":"panel","name":"OUTFEED_box","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":744,"y":170,"w":88,"h":88,"z":3,"fontSize":18,"bg":"#f7f9fa","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0035","type":"label","name":"flowText","text":"Feeder  →  Conveyor  →  Process  →  Outfeed","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":444,"y":278,"w":390,"h":30,"z":3,"fontSize":13,"bg":"#ffffff","fg":"#6b7780","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0036","type":"label","name":"Speed_lbl","text":"Speed","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":912,"y":176,"w":130,"h":28,"z":3,"fontSize":14,"bg":"#ffffff","fg":"#6b7780","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0038","type":"label","name":"Good Count_lbl","text":"Good Count","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":912,"y":230,"w":130,"h":28,"z":3,"fontSize":14,"bg":"#ffffff","fg":"#6b7780","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0040","type":"label","name":"Target_lbl","text":"Target","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":912,"y":284,"w":130,"h":28,"z":3,"fontSize":14,"bg":"#ffffff","fg":"#6b7780","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0043","type":"label","name":"controlsHdr","text":"MACHINE CONTROLS","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":44,"y":378,"w":240,"h":28,"z":3,"fontSize":14,"bg":"#ffffff","fg":"#6b7780","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0051","type":"label","name":"readyHdr","text":"SYSTEM READINESS","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":586,"y":378,"w":240,"h":28,"z":3,"fontSize":14,"bg":"#ffffff","fg":"#6b7780","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0005","type":"nav","name":"nav_Main","text":"OVERVIEW","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":26,"y":654,"w":160,"h":48,"z":4,"fontSize":15,"bg":"#2878b8","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":"Main"},{"id":"obj_demo_0006","type":"nav","name":"nav_Manual","text":"MANUAL","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":206,"y":654,"w":160,"h":48,"z":4,"fontSize":15,"bg":"#344957","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":"Manual"},{"id":"obj_demo_0007","type":"nav","name":"nav_Alarms","text":"ALARMS","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":386,"y":654,"w":160,"h":48,"z":4,"fontSize":15,"bg":"#344957","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":"Alarms"},{"id":"obj_demo_0008","type":"nav","name":"nav_Trends","text":"TRENDS","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":566,"y":654,"w":160,"h":48,"z":4,"fontSize":15,"bg":"#344957","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":"Trends"},{"id":"obj_demo_0009","type":"nav","name":"nav_Setup","text":"SETUP","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":746,"y":654,"w":160,"h":48,"z":4,"fontSize":15,"bg":"#344957","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":"Setup"},{"id":"obj_demo_0011","type":"status","name":"plcStatus","text":"PLC CONNECTED","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":1015,"y":12,"w":225,"h":40,"z":4,"fontSize":16,"bg":"#2e9d58","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0016","type":"status","name":"machineState","text":"RUNNING","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":44,"y":170,"w":200,"h":48,"z":4,"fontSize":18,"bg":"#2e9d58","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0024","type":"lamp","name":"FEEDER_lamp","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":467,"y":183,"w":30,"h":30,"z":4,"fontSize":18,"bg":"#2e9d58","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0025","type":"label","name":"FEEDER_lbl","text":"FEEDER","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":442,"y":223,"w":80,"h":24,"z":4,"fontSize":12,"bg":"#f7f9fa","fg":"#263746","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0027","type":"lamp","name":"CONVEYOR_lamp","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":569,"y":183,"w":30,"h":30,"z":4,"fontSize":18,"bg":"#2e9d58","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0028","type":"label","name":"CONVEYOR_lbl","text":"CONVEYOR","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":544,"y":223,"w":80,"h":24,"z":4,"fontSize":12,"bg":"#f7f9fa","fg":"#263746","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0030","type":"lamp","name":"PROCESS_lamp","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":671,"y":183,"w":30,"h":30,"z":4,"fontSize":18,"bg":"#2e9d58","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0031","type":"label","name":"PROCESS_lbl","text":"PROCESS","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":646,"y":223,"w":80,"h":24,"z":4,"fontSize":12,"bg":"#f7f9fa","fg":"#263746","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0033","type":"lamp","name":"OUTFEED_lamp","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":773,"y":183,"w":30,"h":30,"z":4,"fontSize":18,"bg":"#7f8b94","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0034","type":"label","name":"OUTFEED_lbl","text":"OUTFEED","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":748,"y":223,"w":80,"h":24,"z":4,"fontSize":12,"bg":"#f7f9fa","fg":"#263746","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0037","type":"num","name":"Speed_val","text":"120","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":1070,"y":170,"w":150,"h":44,"z":4,"fontSize":22,"bg":"#f5f7f8","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"pcs/min","navTarget":""},{"id":"obj_demo_0039","type":"num","name":"Good Count_val","text":"2457","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":1070,"y":224,"w":150,"h":44,"z":4,"fontSize":22,"bg":"#f5f7f8","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0041","type":"num","name":"Target_val","text":"2500","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":1070,"y":278,"w":150,"h":44,"z":4,"fontSize":22,"bg":"#f5f7f8","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0044","type":"button","name":"start","text":"START","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":48,"y":428,"w":140,"h":58,"z":4,"fontSize":18,"bg":"#2e9d58","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0045","type":"button","name":"stop","text":"STOP","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":208,"y":428,"w":140,"h":58,"z":4,"fontSize":18,"bg":"#c83b3b","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0046","type":"button","name":"reset","text":"RESET","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":368,"y":428,"w":140,"h":58,"z":4,"fontSize":18,"bg":"#d6dde2","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0047","type":"button","name":"manual","text":"MANUAL","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":48,"y":508,"w":140,"h":58,"z":4,"fontSize":18,"bg":"#d6dde2","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0048","type":"button","name":"auto","text":"AUTO","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":208,"y":508,"w":140,"h":58,"z":4,"fontSize":18,"bg":"#2878b8","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0049","type":"button","name":"home","text":"HOME AXES","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":368,"y":508,"w":140,"h":58,"z":4,"fontSize":18,"bg":"#d6dde2","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0052","type":"lamp","name":"Safety Circuit_lamp","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":590,"y":428,"w":24,"h":24,"z":4,"fontSize":18,"bg":"#2e9d58","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0053","type":"label","name":"Safety Circuit_label","text":"Safety Circuit","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":626,"y":424,"w":230,"h":32,"z":4,"fontSize":15,"bg":"#ffffff","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0054","type":"lamp","name":"Servo System_lamp","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":590,"y":466,"w":24,"h":24,"z":4,"fontSize":18,"bg":"#2e9d58","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0055","type":"label","name":"Servo System_label","text":"Servo System","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":626,"y":462,"w":230,"h":32,"z":4,"fontSize":15,"bg":"#ffffff","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0056","type":"lamp","name":"Air Pressure_lamp","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":590,"y":504,"w":24,"h":24,"z":4,"fontSize":18,"bg":"#2e9d58","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0057","type":"label","name":"Air Pressure_label","text":"Air Pressure","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":626,"y":500,"w":230,"h":32,"z":4,"fontSize":15,"bg":"#ffffff","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0058","type":"lamp","name":"Product Available_lamp","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":590,"y":542,"w":24,"h":24,"z":4,"fontSize":18,"bg":"#2e9d58","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0059","type":"label","name":"Product Available_label","text":"Product Available","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":626,"y":538,"w":230,"h":32,"z":4,"fontSize":15,"bg":"#ffffff","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0060","type":"lamp","name":"Downstream Ready_lamp","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":590,"y":580,"w":24,"h":24,"z":4,"fontSize":18,"bg":"#e3ad22","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0061","type":"label","name":"Downstream Ready_label","text":"Downstream Ready","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":626,"y":576,"w":230,"h":32,"z":4,"fontSize":15,"bg":"#ffffff","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0062","type":"alarm","name":"alarmBanner","text":"NO ACTIVE ALARMS","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":914,"y":560,"w":300,"h":42,"z":4,"fontSize":14,"bg":"#e9eef1","fg":"#263746","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_rnvcq283","type":"bar","name":"bar_65","text":"0 %","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":970,"y":510,"w":200,"h":45,"z":12,"fontSize":20,"bg":"#d9dfe3","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_6a6q94v2","type":"gauge","name":"gauge_63","text":"0","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":930,"y":380,"w":120,"h":120,"z":13,"fontSize":20,"bg":"#ffffff","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_tewy1nua","type":"gauge","name":"gauge_64","text":"0","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":1080,"y":380,"w":120,"h":120,"z":14,"fontSize":20,"bg":"#ffffff","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""}]},{"name":"Manual","objects":[{"id":"obj_demo_0063","type":"panel","name":"bg","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":0,"y":0,"w":1280,"h":720,"z":1,"fontSize":18,"bg":"#eef1f3","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0064","type":"panel","name":"header","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":0,"y":0,"w":1280,"h":64,"z":2,"fontSize":18,"bg":"#263746","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0066","type":"panel","name":"footer","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":0,"y":640,"w":1280,"h":80,"z":2,"fontSize":18,"bg":"#263746","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0072","type":"panel","name":"FEEDER_card","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":24,"y":112,"w":276,"h":430,"z":2,"fontSize":18,"bg":"#ffffff","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0080","type":"panel","name":"CONVEYOR_card","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":324,"y":112,"w":276,"h":430,"z":2,"fontSize":18,"bg":"#ffffff","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0088","type":"panel","name":"PROCESS_card","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":624,"y":112,"w":276,"h":430,"z":2,"fontSize":18,"bg":"#ffffff","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0096","type":"panel","name":"OUTFEED_card","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":924,"y":112,"w":276,"h":430,"z":2,"fontSize":18,"bg":"#ffffff","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0065","type":"label","name":"title","text":"MANUAL CONTROLS","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":28,"y":14,"w":430,"h":36,"z":3,"fontSize":24,"bg":"#263746","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0073","type":"label","name":"FEEDER_hdr","text":"FEEDER","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":44,"y":130,"w":220,"h":28,"z":3,"fontSize":18,"bg":"#ffffff","fg":"#263746","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0078","type":"label","name":"FEEDER_sp","text":"Speed Setpoint","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":44,"y":394,"w":120,"h":28,"z":3,"fontSize":13,"bg":"#ffffff","fg":"#6b7780","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0081","type":"label","name":"CONVEYOR_hdr","text":"CONVEYOR","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":344,"y":130,"w":220,"h":28,"z":3,"fontSize":18,"bg":"#ffffff","fg":"#263746","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0086","type":"label","name":"CONVEYOR_sp","text":"Speed Setpoint","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":344,"y":394,"w":120,"h":28,"z":3,"fontSize":13,"bg":"#ffffff","fg":"#6b7780","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0089","type":"label","name":"PROCESS_hdr","text":"PROCESS","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":644,"y":130,"w":220,"h":28,"z":3,"fontSize":18,"bg":"#ffffff","fg":"#263746","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0094","type":"label","name":"PROCESS_sp","text":"Speed Setpoint","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":644,"y":394,"w":120,"h":28,"z":3,"fontSize":13,"bg":"#ffffff","fg":"#6b7780","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0097","type":"label","name":"OUTFEED_hdr","text":"OUTFEED","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":944,"y":130,"w":220,"h":28,"z":3,"fontSize":18,"bg":"#ffffff","fg":"#263746","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0102","type":"label","name":"OUTFEED_sp","text":"Speed Setpoint","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":944,"y":394,"w":120,"h":28,"z":3,"fontSize":13,"bg":"#ffffff","fg":"#6b7780","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0067","type":"nav","name":"nav_Main","text":"OVERVIEW","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":26,"y":654,"w":160,"h":48,"z":4,"fontSize":15,"bg":"#344957","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":"Main"},{"id":"obj_demo_0068","type":"nav","name":"nav_Manual","text":"MANUAL","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":206,"y":654,"w":160,"h":48,"z":4,"fontSize":15,"bg":"#2878b8","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":"Manual"},{"id":"obj_demo_0069","type":"nav","name":"nav_Alarms","text":"ALARMS","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":386,"y":654,"w":160,"h":48,"z":4,"fontSize":15,"bg":"#344957","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":"Alarms"},{"id":"obj_demo_0070","type":"nav","name":"nav_Trends","text":"TRENDS","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":566,"y":654,"w":160,"h":48,"z":4,"fontSize":15,"bg":"#344957","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":"Trends"},{"id":"obj_demo_0071","type":"nav","name":"nav_Setup","text":"SETUP","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":746,"y":654,"w":160,"h":48,"z":4,"fontSize":15,"bg":"#344957","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":"Setup"},{"id":"obj_demo_0074","type":"status","name":"FEEDER_status","text":"READY","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":44,"y":176,"w":180,"h":42,"z":4,"fontSize":15,"bg":"#2e9d58","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0075","type":"button","name":"FEEDER_start","text":"START","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":44,"y":248,"w":110,"h":52,"z":4,"fontSize":16,"bg":"#2e9d58","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0076","type":"button","name":"FEEDER_stop","text":"STOP","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":170,"y":248,"w":110,"h":52,"z":4,"fontSize":16,"bg":"#c83b3b","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0077","type":"button","name":"FEEDER_jog","text":"JOG","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":44,"y":320,"w":236,"h":52,"z":4,"fontSize":16,"bg":"#d6dde2","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0079","type":"input","name":"FEEDER_input","text":"50","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":170,"y":388,"w":110,"h":40,"z":4,"fontSize":16,"bg":"#f5f7f8","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0082","type":"status","name":"CONVEYOR_status","text":"READY","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":344,"y":176,"w":180,"h":42,"z":4,"fontSize":15,"bg":"#2e9d58","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0083","type":"button","name":"CONVEYOR_start","text":"START","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":344,"y":248,"w":110,"h":52,"z":4,"fontSize":16,"bg":"#2e9d58","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0084","type":"button","name":"CONVEYOR_stop","text":"STOP","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":470,"y":248,"w":110,"h":52,"z":4,"fontSize":16,"bg":"#c83b3b","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0085","type":"button","name":"CONVEYOR_jog","text":"JOG","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":344,"y":320,"w":236,"h":52,"z":4,"fontSize":16,"bg":"#d6dde2","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0087","type":"input","name":"CONVEYOR_input","text":"50","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":470,"y":388,"w":110,"h":40,"z":4,"fontSize":16,"bg":"#f5f7f8","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0090","type":"status","name":"PROCESS_status","text":"READY","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":644,"y":176,"w":180,"h":42,"z":4,"fontSize":15,"bg":"#2e9d58","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0091","type":"button","name":"PROCESS_start","text":"START","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":644,"y":248,"w":110,"h":52,"z":4,"fontSize":16,"bg":"#2e9d58","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0092","type":"button","name":"PROCESS_stop","text":"STOP","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":770,"y":248,"w":110,"h":52,"z":4,"fontSize":16,"bg":"#c83b3b","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0093","type":"button","name":"PROCESS_jog","text":"JOG","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":644,"y":320,"w":236,"h":52,"z":4,"fontSize":16,"bg":"#d6dde2","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0095","type":"input","name":"PROCESS_input","text":"50","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":770,"y":388,"w":110,"h":40,"z":4,"fontSize":16,"bg":"#f5f7f8","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0098","type":"status","name":"OUTFEED_status","text":"READY","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":944,"y":176,"w":180,"h":42,"z":4,"fontSize":15,"bg":"#2e9d58","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0099","type":"button","name":"OUTFEED_start","text":"START","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":944,"y":248,"w":110,"h":52,"z":4,"fontSize":16,"bg":"#2e9d58","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0100","type":"button","name":"OUTFEED_stop","text":"STOP","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":1070,"y":248,"w":110,"h":52,"z":4,"fontSize":16,"bg":"#c83b3b","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0101","type":"button","name":"OUTFEED_jog","text":"JOG","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":944,"y":320,"w":236,"h":52,"z":4,"fontSize":16,"bg":"#d6dde2","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0103","type":"input","name":"OUTFEED_input","text":"50","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":1070,"y":388,"w":110,"h":40,"z":4,"fontSize":16,"bg":"#f5f7f8","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""}]},{"name":"Alarms","objects":[{"id":"obj_demo_0104","type":"panel","name":"bg","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":0,"y":0,"w":1280,"h":720,"z":1,"fontSize":18,"bg":"#eef1f3","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0105","type":"panel","name":"header","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":0,"y":0,"w":1280,"h":64,"z":2,"fontSize":18,"bg":"#263746","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0107","type":"panel","name":"footer","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":0,"y":640,"w":1280,"h":80,"z":2,"fontSize":18,"bg":"#263746","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0113","type":"panel","name":"alarmCard","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":24,"y":106,"w":1232,"h":470,"z":2,"fontSize":18,"bg":"#ffffff","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0106","type":"label","name":"title","text":"ALARMS & EVENTS","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":28,"y":14,"w":430,"h":36,"z":3,"fontSize":24,"bg":"#263746","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0114","type":"label","name":"activeHdr","text":"ACTIVE ALARMS","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":44,"y":126,"w":220,"h":30,"z":3,"fontSize":18,"bg":"#ffffff","fg":"#263746","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0116","type":"label","name":"historyHdr","text":"RECENT EVENTS","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":44,"y":246,"w":220,"h":30,"z":3,"fontSize":18,"bg":"#ffffff","fg":"#263746","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0108","type":"nav","name":"nav_Main","text":"OVERVIEW","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":26,"y":654,"w":160,"h":48,"z":4,"fontSize":15,"bg":"#344957","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":"Main"},{"id":"obj_demo_0109","type":"nav","name":"nav_Manual","text":"MANUAL","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":206,"y":654,"w":160,"h":48,"z":4,"fontSize":15,"bg":"#344957","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":"Manual"},{"id":"obj_demo_0110","type":"nav","name":"nav_Alarms","text":"ALARMS","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":386,"y":654,"w":160,"h":48,"z":4,"fontSize":15,"bg":"#2878b8","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":"Alarms"},{"id":"obj_demo_0111","type":"nav","name":"nav_Trends","text":"TRENDS","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":566,"y":654,"w":160,"h":48,"z":4,"fontSize":15,"bg":"#344957","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":"Trends"},{"id":"obj_demo_0112","type":"nav","name":"nav_Setup","text":"SETUP","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":746,"y":654,"w":160,"h":48,"z":4,"fontSize":15,"bg":"#344957","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":"Setup"},{"id":"obj_demo_0115","type":"alarm","name":"active","text":"No active alarms","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":44,"y":174,"w":1192,"h":44,"z":4,"fontSize":15,"bg":"#e9eef1","fg":"#263746","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0117","type":"label","name":"14:20:31_time","text":"14:20:31","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":52,"y":292,"w":120,"h":32,"z":4,"fontSize":14,"bg":"#ffffff","fg":"#6b7780","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0118","type":"lamp","name":"14:20:31_lamp","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":184,"y":298,"w":20,"h":20,"z":4,"fontSize":18,"bg":"#2e9d58","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0119","type":"label","name":"14:20:31_msg","text":"Machine started","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":220,"y":292,"w":620,"h":32,"z":4,"fontSize":15,"bg":"#ffffff","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0120","type":"label","name":"14:18:07_time","text":"14:18:07","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":52,"y":350,"w":120,"h":32,"z":4,"fontSize":14,"bg":"#ffffff","fg":"#6b7780","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0121","type":"lamp","name":"14:18:07_lamp","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":184,"y":356,"w":20,"h":20,"z":4,"fontSize":18,"bg":"#2878b8","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0122","type":"label","name":"14:18:07_msg","text":"Recipe PRODUCT A loaded","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":220,"y":350,"w":620,"h":32,"z":4,"fontSize":15,"bg":"#ffffff","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0123","type":"label","name":"14:15:44_time","text":"14:15:44","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":52,"y":408,"w":120,"h":32,"z":4,"fontSize":14,"bg":"#ffffff","fg":"#6b7780","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0124","type":"lamp","name":"14:15:44_lamp","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":184,"y":414,"w":20,"h":20,"z":4,"fontSize":18,"bg":"#7f8b94","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0125","type":"label","name":"14:15:44_msg","text":"Operator login","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":220,"y":408,"w":620,"h":32,"z":4,"fontSize":15,"bg":"#ffffff","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0126","type":"label","name":"14:12:09_time","text":"14:12:09","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":52,"y":466,"w":120,"h":32,"z":4,"fontSize":14,"bg":"#ffffff","fg":"#6b7780","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0127","type":"lamp","name":"14:12:09_lamp","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":184,"y":472,"w":20,"h":20,"z":4,"fontSize":18,"bg":"#e3ad22","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0128","type":"label","name":"14:12:09_msg","text":"Safety circuit reset","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":220,"y":466,"w":620,"h":32,"z":4,"fontSize":15,"bg":"#ffffff","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""}]},{"name":"Trends","objects":[{"id":"obj_demo_0129","type":"panel","name":"bg","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":0,"y":0,"w":1280,"h":720,"z":1,"fontSize":18,"bg":"#eef1f3","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0130","type":"panel","name":"header","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":0,"y":0,"w":1280,"h":64,"z":2,"fontSize":18,"bg":"#263746","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0132","type":"panel","name":"footer","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":0,"y":640,"w":1280,"h":80,"z":2,"fontSize":18,"bg":"#263746","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0138","type":"panel","name":"content","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":24,"y":110,"w":1232,"h":470,"z":2,"fontSize":18,"bg":"#ffffff","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0131","type":"label","name":"title","text":"TRENDS","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":28,"y":14,"w":430,"h":36,"z":3,"fontSize":24,"bg":"#263746","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0139","type":"label","name":"placeholder","text":"Reserved for trends content","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":52,"y":142,"w":500,"h":40,"z":3,"fontSize":18,"bg":"#ffffff","fg":"#6b7780","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0133","type":"nav","name":"nav_Main","text":"OVERVIEW","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":26,"y":654,"w":160,"h":48,"z":4,"fontSize":15,"bg":"#344957","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":"Main"},{"id":"obj_demo_0134","type":"nav","name":"nav_Manual","text":"MANUAL","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":206,"y":654,"w":160,"h":48,"z":4,"fontSize":15,"bg":"#344957","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":"Manual"},{"id":"obj_demo_0135","type":"nav","name":"nav_Alarms","text":"ALARMS","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":386,"y":654,"w":160,"h":48,"z":4,"fontSize":15,"bg":"#344957","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":"Alarms"},{"id":"obj_demo_0136","type":"nav","name":"nav_Trends","text":"TRENDS","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":566,"y":654,"w":160,"h":48,"z":4,"fontSize":15,"bg":"#2878b8","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":"Trends"},{"id":"obj_demo_0137","type":"nav","name":"nav_Setup","text":"SETUP","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":746,"y":654,"w":160,"h":48,"z":4,"fontSize":15,"bg":"#344957","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":"Setup"}]},{"name":"Setup","objects":[{"id":"obj_demo_0140","type":"panel","name":"bg","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":0,"y":0,"w":1280,"h":720,"z":1,"fontSize":18,"bg":"#eef1f3","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0141","type":"panel","name":"header","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":0,"y":0,"w":1280,"h":64,"z":2,"fontSize":18,"bg":"#263746","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0143","type":"panel","name":"footer","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":0,"y":640,"w":1280,"h":80,"z":2,"fontSize":18,"bg":"#263746","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0149","type":"panel","name":"content","text":"","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":24,"y":110,"w":1232,"h":470,"z":2,"fontSize":18,"bg":"#ffffff","fg":"#17212b","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0142","type":"label","name":"title","text":"SETUP","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":28,"y":14,"w":430,"h":36,"z":3,"fontSize":24,"bg":"#263746","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0150","type":"label","name":"placeholder","text":"Reserved for setup content","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":52,"y":142,"w":500,"h":40,"z":3,"fontSize":18,"bg":"#ffffff","fg":"#6b7780","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":""},{"id":"obj_demo_0144","type":"nav","name":"nav_Main","text":"OVERVIEW","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":26,"y":654,"w":160,"h":48,"z":4,"fontSize":15,"bg":"#344957","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":"Main"},{"id":"obj_demo_0145","type":"nav","name":"nav_Manual","text":"MANUAL","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":206,"y":654,"w":160,"h":48,"z":4,"fontSize":15,"bg":"#344957","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":"Manual"},{"id":"obj_demo_0146","type":"nav","name":"nav_Alarms","text":"ALARMS","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":386,"y":654,"w":160,"h":48,"z":4,"fontSize":15,"bg":"#344957","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":"Alarms"},{"id":"obj_demo_0147","type":"nav","name":"nav_Trends","text":"TRENDS","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":566,"y":654,"w":160,"h":48,"z":4,"fontSize":15,"bg":"#344957","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":"Trends"},{"id":"obj_demo_0148","type":"nav","name":"nav_Setup","text":"SETUP","trueText":"RUNNING","falseText":"STOPPED","trueColor":"#2e9d58","falseColor":"#c83b3b","animateColor":false,"animateVisibility":false,"animateBlink":false,"blinkSpeed":0.8,"blinkOpacity":0.2,"x":746,"y":654,"w":160,"h":48,"z":4,"fontSize":15,"bg":"#2878b8","fg":"#ffffff","node":"","binding":"none","dataType":"BOOL","buttonMode":"toggle","writeValue":"true","min":0,"max":100,"units":"","navTarget":"Setup"}]}],"currentScreen":"Main"};
+
+
+let currentScreen =
+    project.currentScreen;
+
+// Contains the newest values received
+// from the PLC.
+
+let latestValues = {};
+
+// ==========================================================
+// DRAW SCREEN
+// ==========================================================
+
+function renderScreen() {
+
+    const screen =
+        project.screens.find(
+            s =>
+                s.name ===
+                currentScreen
+        );
+
+    const root =
+        document.getElementById(
+            "screen"
+        );
+
+    root.innerHTML =
+        "";
+
+    root.style.width =
+        project.canvas.width +
+        "px";
+
+    root.style.height =
+        project.canvas.height +
+        "px";
+
+    screen.objects.forEach(
+        obj => {
+
+            let element;
+
+            if (
+                obj.type ===
+                "input"
+            ) {
+
+                element =
+                    document.createElement(
+                        "input"
+                    );
+
+                element.value =
+                    obj.text;
+
+            }
+
+            else {
+
+                element =
+                    document.createElement(
+                        "div"
+                    );
+
+                element.innerText =
+                    obj.text;
+            }
+
+            element.className =
+                "runtime-object " +
+                obj.type;
+
+            element.style.left =
+                obj.x + "px";
+
+            element.style.top =
+                obj.y + "px";
+
+            element.style.width =
+                obj.w + "px";
+
+            element.style.height =
+                obj.h + "px";
+
+            element.style.background =
+                obj.bg;
+
+            element.style.color =
+                obj.fg;
+
+            element.style.fontSize =
+                obj.fontSize + "px";
+
+            element.dataset.node =
+                obj.node;
+
+            element.dataset.binding =
+                obj.binding;
+
+            element.dataset.dtype =
+                obj.dataType;
+
+            element.dataset.objectId =
+                obj.id;
+
+            // ==============================================
+            // NAVIGATION BUTTON
+            // ==============================================
+
+            if (
+                obj.type ===
+                "nav"
+            ) {
+
+                element.onclick =
+                    () => {
+
+                        if (
+                            obj.navTarget
+                        ) {
+
+                            currentScreen =
+                                obj.navTarget;
+
+                            renderScreen();
+
+                            updateDisplay();
+                        }
+
+                    };
+            }
+
+            // ==============================================
+            // BOOL / WRITE BUTTONS
+            // ==============================================
+
+            if (
+                obj.type ===
+                "button" ||
+                obj.type ===
+                "toggle"
+            ) {
+
+                configureButton(
+                    element,
+                    obj
+                );
+            }
+
+            // ==============================================
+            // NUMERIC INPUT
+            // ==============================================
+
+            if (
+                obj.type ===
+                "input"
+            ) {
+
+                element.addEventListener(
+                    "change",
+                    () => {
+
+                        let value =
+                            element.value;
+
+
+                        if (
+                            obj.dataType ===
+                            "DINT"
+                        ) {
+
+                            value =
+                                parseInt(
+                                    value
+                                );
+                        }
+
+                        else if (
+                            obj.dataType ===
+                            "REAL" ||
+                            obj.dataType ===
+                            "LREAL"
+                        ) {
+
+                            value =
+                                parseFloat(
+                                    value
+                                );
+                        }
+
+                        writePLCValue(
+                            obj.node,
+                            value,
+                            obj.dataType
+                        );
+                    }
+                );
+            }
+
+            root.appendChild(
+                element
+            );
+
+        }
+    );
+}
+
+// ==========================================================
+// CONFIGURE BUTTON BEHAVIOR
+// ==========================================================
+
+function configureButton(
+    element,
+    obj
+) {
+
+    if (!obj.node) {
+        return;
+    }
+
+    const mode =
+        obj.buttonMode ||
+        "toggle";
+
+    // ------------------------------------------------------
+    // TOGGLE
+    // ------------------------------------------------------
+
+    if (
+        mode ===
+        "toggle"
+    ) {
+
+        element.addEventListener(
+            "click",
+            async () => {
+
+                const current =
+                    Boolean(
+                        latestValues[
+                            obj.node
+                        ]
+                    );
+
+                await writePLCValue(
+                    obj.node,
+                    !current,
+                    "BOOL"
+                );
+            }
+        );
+
+        return;
+    }
+
+    // ------------------------------------------------------
+    // SET TRUE
+    // ------------------------------------------------------
+
+    if (
+        mode ===
+        "setTrue"
+    ) {
+
+        element.addEventListener(
+            "click",
+            () => {
+
+                writePLCValue(
+                    obj.node,
+                    true,
+                    "BOOL"
+                );
+            }
+        );
+
+        return;
+    }
+
+    // ------------------------------------------------------
+    // SET FALSE
+    // ------------------------------------------------------
+
+    if (
+        mode ===
+        "setFalse"
+    ) {
+
+        element.addEventListener(
+            "click",
+            () => {
+
+                writePLCValue(
+                    obj.node,
+                    false,
+                    "BOOL"
+                );
+            }
+        );
+
+        return;
+    }
+
+    // ------------------------------------------------------
+    // MOMENTARY
+    // ------------------------------------------------------
+
+    if (
+        mode ===
+        "momentary"
+    ) {
+
+        const press =
+            event => {
+
+                event.preventDefault();
+
+                writePLCValue(
+                    obj.node,
+                    true,
+                    "BOOL"
+                );
+            };
+
+        const release =
+            event => {
+
+                event.preventDefault();
+
+                writePLCValue(
+                    obj.node,
+                    false,
+                    "BOOL"
+                );
+            };
+
+        element.addEventListener(
+            "pointerdown",
+            press
+        );
+
+        element.addEventListener(
+            "pointerup",
+            release
+        );
+
+        element.addEventListener(
+            "pointercancel",
+            release
+        );
+
+        element.addEventListener(
+            "pointerleave",
+            event => {
+
+                if (
+                    event.buttons !== 0
+                ) {
+
+                    release(event);
+                }
+            }
+        );
+
+        return;
+    }
+
+    // ------------------------------------------------------
+    // GENERIC WRITE VALUE
+    // ------------------------------------------------------
+
+    element.addEventListener(
+        "click",
+        () => {
+
+            let value =
+                obj.writeValue;
+
+
+            if (
+                obj.dataType ===
+                "BOOL"
+            ) {
+
+                value =
+                    String(value)
+                        .toLowerCase()
+                        ===
+                        "true";
+            }
+
+            else if (
+                obj.dataType ===
+                "DINT"
+            ) {
+
+                value =
+                    parseInt(value);
+            }
+
+            else if (
+                obj.dataType ===
+                "REAL" ||
+                obj.dataType ===
+                "LREAL"
+            ) {
+
+                value =
+                    parseFloat(value);
+            }
+
+            writePLCValue(
+                obj.node,
+                value,
+                obj.dataType
+            );
+        }
+    );
+}
+
+// ==========================================================
+// WRITE VALUE TO PYTHON BACKEND
+// ==========================================================
+
+async function writePLCValue(
+    node,
+    value,
+    dataType
+) {
+
+    if (!node) {
+        return;
+    }
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/write",
+                {
+
+                    method:
+                        "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body:
+                        JSON.stringify(
+                            {
+
+                                node:
+                                    node,
+
+                                value:
+                                    value,
+
+                                dataType:
+                                    dataType
+                            }
+                        )
+                }
+            );
+
+        const result =
+            await response.json();
+
+        if (
+            !result.success
+        ) {
+
+            console.error(
+                "PLC write failed:",
+                result.error
+            );
+        }
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "PLC write error:",
+            error
+        );
+    }
+}
+
+// ==========================================================
+// GET TAG VALUES FROM PYTHON
+// ==========================================================
+
+async function updateTags() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/tags"
+            );
+
+        latestValues =
+            await response.json();
+
+
+        updateDisplay();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "PLC read error:",
+            error
+        );
+    }
+}
+
+// ==========================================================
+// UPDATE DISPLAYED VALUES
+// ==========================================================
+
+function updateDisplay() {
+
+    document
+        .querySelectorAll(
+            "[data-node]"
+        )
+        .forEach(
+            element => {
+
+                const node =
+                    element.dataset.node;
+
+
+                if (
+                    !node ||
+                    !(node in latestValues)
+                ) {
+
+                    return;
+                }
+
+                const value =
+                    latestValues[node];
+
+                const objectId =
+                    element.dataset.objectId;
+
+                const obj =
+                    project.screens
+                        .flatMap(
+                            s =>
+                                s.objects
+                        )
+                        .find(
+                            o =>
+                                o.id ===
+                                objectId
+                        );
+
+                if (!obj) {
+                    return;
+                }
+
+                // ------------------------------------------
+                // INPUT
+                // ------------------------------------------
+
+                if (
+                    element.tagName ===
+                    "INPUT"
+                ) {
+
+                    if (
+                        document.activeElement
+                        !==
+                        element
+                    ) {
+
+                        element.value =
+                            value;
+                    }
+
+                    return;
+                }
+
+                // ------------------------------------------
+                // BUTTON
+                // ------------------------------------------
+
+                if (
+                    obj.type ===
+                    "button" ||
+                    obj.type ===
+                    "toggle"
+                ) {
+
+                    if (
+                        obj.dataType ===
+                        "BOOL"
+                    ) {
+
+                        element.dataset.state =
+                            value
+                            ? "true"
+                            : "false";
+
+
+                        if (value) {
+
+                            element.style.boxShadow =
+                                "inset 0 0 0 4px #36a852";
+
+                        }
+
+                        else {
+
+                            element.style.boxShadow =
+                                "none";
+                        }
+                    }
+
+                    return;
+                }
+
+                // ------------------------------------------
+                // LAMP
+                // ------------------------------------------
+
+                if (
+                    obj.type ===
+                    "lamp"
+                ) {
+
+                    element.style.background =
+                        value
+                        ? "#33cc55"
+                        : "#777777";
+
+                    return;
+                }
+
+                // ------------------------------------------
+                // STATUS INDICATOR
+                // ------------------------------------------
+
+                if (
+                    obj.type ===
+                    "status"
+                ) {
+
+                    if (obj.dataType === "BOOL") {
+
+                        if (value) {
+
+                            element.innerText =
+                                obj.trueText ||
+                                "RUNNING";
+
+                            element.style.background =
+                                obj.trueColor ||
+                                "#2e9d58";
+
+                        } else {
+
+                            element.innerText =
+                                obj.falseText ||
+                                "STOPPED";
+
+                            element.style.background =
+                                obj.falseColor ||
+                                "#c83b3b";
+                        }
+
+                        element.style.color =
+                            "#ffffff";
+                    }
+
+                    return;
+                }
+
+                // ------------------------------------------
+                // GENERIC BOOL COLOR ANIMATION
+                // ------------------------------------------
+
+                if (
+                    obj.animateColor === true &&
+                    obj.dataType === "BOOL"
+                ) {
+
+                    element.style.background =
+                        value
+                            ? (obj.trueColor || "#2e9d58")
+                            : (obj.falseColor || "#c83b3b");
+                }
+
+                // ------------------------------------------
+                // GENERIC BOOL VISIBILITY ANIMATION
+                // ------------------------------------------
+
+                    if (
+                        obj.animateVisibility === true &&
+                        obj.dataType === "BOOL"
+                    ) {
+
+                        element.style.display =
+                            value
+                                ? "flex"
+                                : "none";
+                    }
+
+                                if (
+                    obj.animateBlink === true &&
+                    obj.dataType === "BOOL"
+                    ) {
+
+                    if (value) {
+
+                        const speed =
+                            obj.blinkSpeed ?? 0.8;
+
+                        const opacity =
+                            obj.blinkOpacity ?? 0.2;
+
+
+                        element.style.setProperty(
+                            "--blink-speed",
+                            speed + "s"
+                        );
+
+                        element.style.setProperty(
+                            "--blink-opacity",
+                            opacity
+                        );
+
+                        element.classList.add(
+                            "blink-active"
+                        );
+
+                    } else {
+
+                        element.classList.remove(
+                            "blink-active"
+                        );
+
+                        element.style.opacity =
+                            "1";
+                    }
+                }
+
+                // ------------------------------------------
+                // EVERYTHING ELSE
+                // ------------------------------------------
+
+                let displayValue =
+                    value;
+
+                if (
+                    obj.units
+                ) {
+
+                    displayValue +=
+                        " " +
+                        obj.units;
+                }
+
+                element.innerText =
+                    displayValue;
+
+            }
+        );
+}
+
+// ==========================================================
+// START RUNTIME
+// ==========================================================
+
+renderScreen();
+
+updateTags();
+
+setInterval(
+    updateTags,
+    250
+);
+
+</script>
+
+</body>
+
+</html>

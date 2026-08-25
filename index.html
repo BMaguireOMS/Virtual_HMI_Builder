@@ -166,6 +166,12 @@
         Status Indicator
       </button>
 
+      <button
+        class="tool"
+        data-t="dropdown">
+        Dropdown / Combo Box
+      </button>
+
     </div>
 
 
@@ -537,6 +543,57 @@
 
 <hr>
 
+<!-- ============================================ -->
+<!-- DROPDOWN PROPERTIES -->
+<!-- ============================================ -->
+
+<label>
+    Dropdown Mode
+
+    <select id="dropdownMode">
+        <option value="navigation">
+            Navigation
+        </option>
+
+        <option value="write">
+            PLC Write
+        </option>
+    </select>
+</label>
+
+
+<div id="dropdownOptionsEditor">
+
+    <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-top:10px;
+        margin-bottom:6px;
+    ">
+
+        <span style="
+            font-size:12px;
+            color:#adb7c0;
+        ">
+            Dropdown Options
+        </span>
+
+        <button
+            id="addDropdownOption"
+            type="button">
+            + Add Option
+        </button>
+
+    </div>
+
+
+    <div id="dropdownOptionsList">
+    </div>
+
+</div>
+
+<hr>
 
       <label>
         OPC UA Node ID

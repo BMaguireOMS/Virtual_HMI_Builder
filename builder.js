@@ -1442,9 +1442,6 @@ $("dropdownOptionsList").addEventListener(
                 event.target.value;
         }
 
-
-        // Update the visual dropdown preview
-        render();
     }
 );
 

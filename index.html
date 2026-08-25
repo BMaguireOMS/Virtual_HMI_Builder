@@ -311,11 +311,15 @@
       </label>
 
 
-      <label>
-        Text
+      <div id="textProperties">
 
-        <input id="text">
-      </label>
+          <label>
+              Text
+
+              <input id="text">
+          </label>
+
+      </div>
 
 
       <div class="two">
@@ -358,40 +362,45 @@
       </div>
 
 
-      <label>
-        Font Size
+      <div id="fontProperties">
 
-        <input
-          id="font"
-          type="number">
-      </label>
+          <label>
+              Font Size
 
-
-      <div class="two">
-
-        <label>
-          Background
-
-          <input
-            id="bg"
-            type="color">
-        </label>
-
-
-        <label>
-          Foreground
-
-          <input
-            id="fg"
-            type="color">
-        </label>
+              <input
+                  id="font"
+                  type="number">
+          </label>
 
       </div>
+
+
+<div id="colorProperties">
+
+    <div class="two">
+
+        <label>
+            Background
+            <input
+                id="bg"
+                type="color">
+        </label>
+
+        <label>
+            Foreground
+            <input
+                id="fg"
+                type="color">
+        </label>
+
+    </div>
+
+</div>
 
       <!-- ============================================ -->
 <!-- STATUS INDICATOR PROPERTIES -->
 <!-- ============================================ -->
-
+<div id="statusProperties">
 <label>
     True Text
     <input
@@ -423,8 +432,9 @@
         type="color"
         value="#c83b3b">
 </label>
+</div>
 
-
+<div id="animationProperties">
 <div style="
     display:flex;
     flex-direction:row;
@@ -539,7 +549,7 @@
         step="0.1"
         value="0.2">
 </label>
-
+</div>
 
 <hr>
 
@@ -547,54 +557,61 @@
 <!-- DROPDOWN PROPERTIES -->
 <!-- ============================================ -->
 
-<label>
-    Dropdown Mode
+<div id="dropdownProperties">
 
-    <select id="dropdownMode">
-        <option value="navigation">
-            Navigation
-        </option>
+    <label>
+        Dropdown Mode
 
-        <option value="write">
-            PLC Write
-        </option>
-    </select>
-</label>
+        <select id="dropdownMode">
+
+            <option value="navigation">
+                Navigation
+            </option>
+
+            <option value="write">
+                PLC Write
+            </option>
+
+        </select>
+    </label>
 
 
-<div id="dropdownOptionsEditor">
+    <div id="dropdownOptionsEditor">
 
-    <div style="
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        margin-top:10px;
-        margin-bottom:6px;
-    ">
-
-        <span style="
-            font-size:12px;
-            color:#adb7c0;
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-top:10px;
+            margin-bottom:6px;
         ">
-            Dropdown Options
-        </span>
 
-        <button
-            id="addDropdownOption"
-            type="button">
-            + Add Option
-        </button>
+            <span style="
+                font-size:12px;
+                color:#adb7c0;
+            ">
+                Dropdown Options
+            </span>
 
-    </div>
+            <button
+                id="addDropdownOption"
+                type="button">
+                + Add Option
+            </button>
+
+        </div>
 
 
-    <div id="dropdownOptionsList">
+        <div id="dropdownOptionsList">
+        </div>
+
     </div>
 
 </div>
 
 <hr>
 
+<div id="opcProperties">
       <label>
         OPC UA Node ID
 
@@ -658,8 +675,9 @@
         </select>
 
       </label>
+    </div>
 
-
+<div id="buttonProperties">
       <label>
     Button Mode
 
@@ -687,6 +705,7 @@
 
     </select>
 </label>
+</div>
 
 
 <label>
@@ -700,6 +719,7 @@
 
       <div class="two">
 
+      <div id="rangeProperties">
         <label>
           Min
 
@@ -726,12 +746,15 @@
         <input id="units">
       </label>
 
+    </div>
 
+    <div id="navProperties">
       <label>
         Navigation Target
 
         <select id="navTarget"></select>
       </label>
+    </div>
 
 
       <button id="apply">

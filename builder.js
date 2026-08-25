@@ -1097,6 +1097,138 @@ function selectObject(id) {
     updateSelectionVisuals();
 }
 
+function updatePropertyVisibility(obj) {
+
+    const type =
+        obj.type;
+
+
+    // ========================================================
+    // TEXT
+    // ========================================================
+
+    $("textProperties").hidden =
+        ![
+            "label",
+            "button",
+            "toggle",
+            "alarm",
+            "nav"
+        ].includes(type);
+
+
+    // ========================================================
+    // FONT
+    // ========================================================
+
+    $("fontProperties").hidden =
+        ![
+            "label",
+            "button",
+            "toggle",
+            "num",
+            "input",
+            "gauge",
+            "bar",
+            "alarm",
+            "nav",
+            "status",
+            "dropdown"
+        ].includes(type);
+
+
+    // ========================================================
+    // COLORS
+    // ========================================================
+
+    $("colorProperties").hidden =
+        type === "image";
+
+
+    // ========================================================
+    // RANGE / UNITS
+    // ========================================================
+
+    $("rangeProperties").hidden =
+        ![
+            "num",
+            "input",
+            "gauge",
+            "bar"
+        ].includes(type);
+
+
+    // ========================================================
+    // NAVIGATION
+    // ========================================================
+
+    $("navProperties").hidden =
+        type !== "nav";
+
+
+    // ========================================================
+    // BUTTON
+    // ========================================================
+
+    $("buttonProperties").hidden =
+        ![
+            "button",
+            "toggle"
+        ].includes(type);
+
+
+    // ========================================================
+    // OPC UA
+    // ========================================================
+
+    $("opcProperties").hidden =
+        ![
+            "button",
+            "toggle",
+            "num",
+            "input",
+            "lamp",
+            "gauge",
+            "bar",
+            "alarm",
+            "trend",
+            "status",
+            "dropdown"
+        ].includes(type);
+
+
+    // ========================================================
+    // STATUS INDICATOR
+    // ========================================================
+
+    $("statusProperties").hidden =
+        type !== "status";
+
+
+    // ========================================================
+    // DROPDOWN
+    // ========================================================
+
+    $("dropdownProperties").hidden =
+        type !== "dropdown";
+
+
+    // ========================================================
+    // ANIMATIONS
+    // ========================================================
+
+    $("animationProperties").hidden =
+        ![
+            "label",
+            "button",
+            "toggle",
+            "panel",
+            "lamp",
+            "status",
+            "alarm"
+        ].includes(type);
+}
+
 // ============================================================
 // PROPERTY PANEL
 // ============================================================
@@ -1198,6 +1330,10 @@ function updatePropertyPanel() {
     "navigation";
 
     renderDropdownOptionsEditor();
+
+    updatePropertyVisibility(
+    obj
+    );
 }
 
 // ============================================================

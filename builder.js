@@ -267,7 +267,7 @@ let project = {
 
 let selectedId = null;
 let zCounter = 10;
-let clipboardObject = null;
+let clipboardObjects = [];
 
 let selectedIds = new Set();
 
@@ -2122,59 +2122,138 @@ function duplicateSelected() {
 
 function copySelected() {
 
-    const obj = getSelectedObject();
+    const objects =
+        getSelectedObjects();
 
-    if (!obj) {
+    if (objects.length === 0) {
+
+        const obj =
+            getSelectedObject();
+
+        if (!obj) {
+            return;
+        }
+
+        clipboardObjects = [
+            JSON.parse(
+                JSON.stringify(obj)
+            )
+        ];
+
         return;
     }
 
-    clipboardObject = JSON.parse(
-        JSON.stringify(obj)
-    );
+
+    clipboardObjects =
+        objects.map(
+            obj =>
+                JSON.parse(
+                    JSON.stringify(obj)
+                )
+        );
 
     console.log(
-        "Copied object:",
-        clipboardObject.name
+        "Copied objects:",
+        clipboardObjects.length
     );
 }
 
 
 function pasteObject() {
 
-    if (!clipboardObject) {
+    console.log(
+    "PASTE START - clipboard contains:",
+    clipboardObjects.length,
+    clipboardObjects
+    );
+
+    if (
+        !clipboardObjects ||
+        clipboardObjects.length === 0
+    ) {
         return;
     }
 
-    const copy = JSON.parse(
-        JSON.stringify(clipboardObject)
-    );
-
-    copy.id = uid();
-
-    copy.name =
-        copy.name + "_copy";
-
-    copy.x += 20;
-    copy.y += 20;
-
-    copy.z =
-        ++zCounter;
 
     saveHistory();
 
-    currentScreen()
-        .objects
-        .push(copy);
+
+    const newObjects = [];
+
+
+    clipboardObjects.forEach(
+        original => {
+
+            const copy =
+                JSON.parse(
+                    JSON.stringify(original)
+                );
+
+
+            copy.id =
+                uid();
+
+
+            copy.name =
+                copy.name +
+                "_copy";
+
+
+            copy.x +=
+                20;
+
+            copy.y +=
+                20;
+
+
+            copy.z =
+                ++zCounter;
+
+
+            currentScreen()
+                .objects
+                .push(copy);
+
+
+            newObjects.push(copy);
+
+        }
+    );
+
+
+    // Select all newly pasted objects
+    selectedIds.clear();
+
+
+    newObjects.forEach(
+        obj => {
+
+            selectedIds.add(
+                obj.id
+            );
+
+        }
+    );
+
 
     selectedId =
-        copy.id;
+        newObjects.length
+            ? newObjects[
+                newObjects.length - 1
+            ].id
+            : null;
 
-    // Keep the clipboard aligned with the newest pasted copy,
-    // so repeated Ctrl+V continues offsetting objects.
-    clipboardObject =
-        JSON.parse(
-            JSON.stringify(copy)
+
+    // Move clipboard forward so repeated Ctrl+V
+    // continues offsetting the group
+    clipboardObjects =
+        newObjects.map(
+            obj =>
+                JSON.parse(
+                    JSON.stringify(obj)
+                )
         );
+
 
     render();
 }
@@ -2182,17 +2261,13 @@ function pasteObject() {
 
 function cutSelected() {
 
-    const obj =
-        getSelectedObject();
+    copySelected();
 
-    if (!obj) {
+    if (
+        clipboardObjects.length === 0
+    ) {
         return;
     }
-
-    clipboardObject =
-        JSON.parse(
-            JSON.stringify(obj)
-        );
 
     deleteSelected();
 }

@@ -1037,30 +1037,100 @@ function renderDropdownOptionsEditor() {
                 "10px";
 
 
-            row.innerHTML = `
-                <label>
-                    Label
-                    <input
-                        class="dropdown-option-label"
-                        data-index="${index}"
-                        value="${optionData.label || ""}">
-                </label>
+            if (
+    obj.dropdownMode ===
+    "navigation"
+) {
 
-                <label>
-                    Target / Value
-                    <input
-                        class="dropdown-option-value"
-                        data-index="${index}"
-                        value="${optionData.value || ""}">
-                </label>
+    const screenOptions =
+        project.screens
+            .map(
+                screen => {
 
-                <button
-                    type="button"
-                    class="remove-dropdown-option"
-                    data-index="${index}">
-                    Remove
-                </button>
-            `;
+                    const selected =
+                        screen.name ===
+                        optionData.value
+                            ? "selected"
+                            : "";
+
+                    return `
+                        <option
+                            value="${screen.name}"
+                            ${selected}>
+                            ${screen.name}
+                        </option>
+                    `;
+                }
+            )
+            .join("");
+
+
+                row.innerHTML = `
+                    <label>
+                        Label
+
+                        <input
+                            class="dropdown-option-label"
+                            data-index="${index}"
+                            value="${optionData.label || ""}">
+                    </label>
+
+
+                    <label>
+                        Target Screen
+
+                        <select
+                            class="dropdown-option-value"
+                            data-index="${index}">
+
+                            ${screenOptions}
+
+                        </select>
+                    </label>
+
+
+                    <button
+                        type="button"
+                        class="remove-dropdown-option"
+                        data-index="${index}">
+                        Remove
+                    </button>
+                `;
+
+            }
+
+            else {
+
+                row.innerHTML = `
+                    <label>
+                        Label
+
+                        <input
+                            class="dropdown-option-label"
+                            data-index="${index}"
+                            value="${optionData.label || ""}">
+                    </label>
+
+
+                    <label>
+                        Value
+
+                        <input
+                            class="dropdown-option-value"
+                            data-index="${index}"
+                            value="${optionData.value || ""}">
+                    </label>
+
+
+                    <button
+                        type="button"
+                        class="remove-dropdown-option"
+                        data-index="${index}">
+                        Remove
+                    </button>
+                `;
+
+            }
 
 
             list.appendChild(
@@ -1464,16 +1534,85 @@ $("addDropdownOption").addEventListener(
         }
 
 
+        const defaultValue =
+            obj.dropdownMode === "navigation" &&
+            project.screens.length > 0
+                ? project.screens[0].name
+                : "";
+
         obj.dropdownOptions.push(
             {
                 label: "New Option",
-                value: ""
+                value: defaultValue
             }
         );
 
 
         renderDropdownOptionsEditor();
 
+    }
+);
+
+$("dropdownOptionsList").addEventListener(
+    "change",
+    event => {
+
+        const obj =
+            getSelectedObject();
+
+        if (
+            !obj ||
+            obj.type !== "dropdown"
+        ) {
+            return;
+        }
+
+        if (
+            !event.target.classList.contains(
+                "dropdown-option-value"
+            )
+        ) {
+            return;
+        }
+
+        const index =
+            Number(
+                event.target.dataset.index
+            );
+
+        if (
+            Number.isNaN(index) ||
+            !obj.dropdownOptions[index]
+        ) {
+            return;
+        }
+
+        obj.dropdownOptions[index].value =
+            event.target.value;
+    }
+);
+
+$("dropdownMode").addEventListener(
+    "change",
+    () => {
+
+        const obj =
+            getSelectedObject();
+
+
+        if (
+            !obj ||
+            obj.type !== "dropdown"
+        ) {
+            return;
+        }
+
+
+        obj.dropdownMode =
+            $("dropdownMode").value;
+
+
+        renderDropdownOptionsEditor();
     }
 );
 

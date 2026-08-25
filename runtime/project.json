@@ -15,7 +15,7 @@
       "name": "Main",
       "objects": [
         {
-          "id": "obj_8q0gg4a9",
+          "id": "obj_fh6ublsg",
           "type": "dropdown",
           "name": "dropdown_1",
           "text": "SELECT",
@@ -26,8 +26,8 @@
               "value": "Main"
             },
             {
-              "label": "Manual",
-              "value": "Manual"
+              "label": "Secondary",
+              "value": "Secondary"
             }
           ],
           "trueText": "RUNNING",
@@ -60,10 +60,10 @@
       ]
     },
     {
-      "name": "Manual",
+      "name": "Secondary",
       "objects": [
         {
-          "id": "obj_6vnz4jnf",
+          "id": "obj_qkfso49y",
           "type": "dropdown",
           "name": "dropdown_1_copy",
           "text": "SELECT",
@@ -74,8 +74,8 @@
               "value": "Main"
             },
             {
-              "label": "Manual",
-              "value": "Manual"
+              "label": "Secondary",
+              "value": "Secondary"
             }
           ],
           "trueText": "RUNNING",
@@ -106,7 +106,7 @@
           "navTarget": ""
         },
         {
-          "id": "obj_cafub29w",
+          "id": "obj_hnxbcnjt",
           "type": "label",
           "name": "label_2",
           "text": "Label",
@@ -126,11 +126,50 @@
           "animateBlink": false,
           "blinkSpeed": 0.8,
           "blinkOpacity": 0.2,
-          "x": 450,
-          "y": 240,
+          "x": 190,
+          "y": 230,
           "w": 160,
           "h": 40,
           "z": 13,
+          "fontSize": 20,
+          "bg": "#eef2f4",
+          "fg": "#1b252d",
+          "node": "",
+          "binding": "none",
+          "dataType": "BOOL",
+          "buttonMode": "toggle",
+          "writeValue": "true",
+          "min": 0,
+          "max": 100,
+          "units": "",
+          "navTarget": ""
+        },
+        {
+          "id": "obj_n0jaure3",
+          "type": "label",
+          "name": "label_3",
+          "text": "Label",
+          "dropdownMode": "navigation",
+          "dropdownOptions": [
+            {
+              "label": "Main",
+              "value": "Main"
+            }
+          ],
+          "trueText": "RUNNING",
+          "falseText": "STOPPED",
+          "trueColor": "#2e9d58",
+          "falseColor": "#c83b3b",
+          "animateColor": false,
+          "animateVisibility": false,
+          "animateBlink": false,
+          "blinkSpeed": 0.8,
+          "blinkOpacity": 0.2,
+          "x": 470,
+          "y": 240,
+          "w": 160,
+          "h": 40,
+          "z": 14,
           "fontSize": 20,
           "bg": "#eef2f4",
           "fg": "#1b252d",
@@ -147,5 +186,5 @@
       ]
     }
   ],
-  "currentScreen": "Main"
+  "currentScreen": "Secondary"
 }
